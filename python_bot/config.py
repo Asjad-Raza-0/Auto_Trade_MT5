@@ -88,6 +88,10 @@ class Config:
         return self.data.get("general", {}).get("data_provider", "twelvedata")
 
     @property
+    def strategy_name(self) -> str:
+        return self.data.get("general", {}).get("strategy_name", "trident_v2")
+
+    @property
     def account_balance(self) -> float:
         return float(self.data.get("general", {}).get("account_balance", 10000.0))
 
