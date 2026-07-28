@@ -24,6 +24,14 @@ class ConsoleNotifier(BaseNotifier):
             f"Notes: {signal.notes}\n"
             f"======================================================\n"
         )
-        logger.info(msg)
-        print(msg)
+        try:
+            logger.info(msg)
+        except Exception:
+            clean_msg = msg.encode("ascii", "ignore").decode("ascii")
+            logger.info(clean_msg)
+        try:
+            print(msg)
+        except Exception:
+            clean_msg = msg.encode("ascii", "ignore").decode("ascii")
+            print(clean_msg)
         return True
