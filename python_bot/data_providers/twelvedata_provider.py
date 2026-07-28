@@ -8,15 +8,18 @@ from python_bot.data_providers.base_provider import BaseDataProvider
 
 logger = logging.getLogger(__name__)
 
+from python_bot.data_providers.yfinance_provider import YFinanceProvider
+
 class TwelveDataProvider(BaseDataProvider):
     """
-    TwelveData API adapter for Forex & Precious Metals.
+    TwelveData API adapter for Forex & Precious Metals with automatic retry and YFinance fallback.
     """
     def __init__(self, api_key: str, rate_limit_pause: float = 8.0):
         self.api_key = api_key
         self.rate_limit_pause = rate_limit_pause
         self.base_url = "https://api.twelvedata.com/time_series"
         self.last_call_time = 0.0
+        self.fallback_provider = YFinanceProvider()
 
     @property
     def name(self) -> str:
@@ -40,12 +43,6 @@ class TwelveDataProvider(BaseDataProvider):
         return interval
 
     def get_candles(self, symbol: str, interval: str, outputsize: int = 250) -> Optional[pd.DataFrame]:
-        # Rate limit control (free tier = 8 calls/min)
-        now = time.time()
-        elapsed = now - self.last_call_time
-        if elapsed < self.rate_limit_pause:
-            time.sleep(self.rate_limit_pause - elapsed)
-
         formatted_sym = self.format_symbol(symbol)
         formatted_interval = self.map_interval(interval)
 
@@ -57,33 +54,43 @@ class TwelveDataProvider(BaseDataProvider):
             "timezone": "UTC"
         }
 
-        try:
-            self.last_call_time = time.time()
-            res = requests.get(self.base_url, params=params, timeout=10)
-            data = res.json()
+        # Try TwelveData API up to 3 times
+        max_retries = 3
+        for attempt in range(1, max_retries + 1):
+            now = time.time()
+            elapsed = now - self.last_call_time
+            if elapsed < self.rate_limit_pause:
+                time.sleep(self.rate_limit_pause - elapsed)
 
-            if "values" not in data:
-                err_msg = data.get("message", "Unknown error")
-                logger.error(f"[TwelveData] Error fetching {symbol} ({interval}): {err_msg}")
-                return None
+            try:
+                self.last_call_time = time.time()
+                res = requests.get(self.base_url, params=params, timeout=20)
+                data = res.json()
 
-            values = data["values"]
-            df = pd.DataFrame(values)
+                if "values" in data:
+                    values = data["values"]
+                    df = pd.DataFrame(values)
 
-            df["datetime"] = pd.to_datetime(df["datetime"])
-            for col in ["open", "high", "low", "close"]:
-                df[col] = df[col].astype(float)
-            if "volume" in df.columns:
-                df["volume"] = df["volume"].astype(float)
-            else:
-                df["volume"] = 0.0
+                    df["datetime"] = pd.to_datetime(df["datetime"])
+                    for col in ["open", "high", "low", "close"]:
+                        df[col] = df[col].astype(float)
+                    if "volume" in df.columns:
+                        df["volume"] = df["volume"].astype(float)
+                    else:
+                        df["volume"] = 0.0
 
-            # Sort ascending by time
-            df = df.sort_values("datetime").reset_index(drop=True)
-            df = df.rename(columns={"datetime": "time"})
+                    df = df.sort_values("datetime").reset_index(drop=True)
+                    df = df.rename(columns={"datetime": "time"})
+                    return df[["time", "open", "high", "low", "close", "volume"]]
+                else:
+                    err_msg = data.get("message", "Unknown error")
+                    logger.warning(f"[TwelveData] Attempt {attempt}/{max_retries} failed for {symbol}: {err_msg}")
 
-            return df[["time", "open", "high", "low", "close", "volume"]]
+            except Exception as e:
+                logger.warning(f"[TwelveData] Attempt {attempt}/{max_retries} timeout/exception for {symbol}: {e}")
 
-        except Exception as e:
-            logger.error(f"[TwelveData] Request exception for {symbol}: {e}")
-            return None
+            time.sleep(2.0)
+
+        # Fallback to YFinance if TwelveData fails or times out
+        logger.info(f"[TwelveData] Falling back to YFinance for {symbol} ({interval})")
+        return self.fallback_provider.get_candles(symbol, interval, outputsize)
