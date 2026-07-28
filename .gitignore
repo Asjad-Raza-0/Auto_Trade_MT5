@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+bot_state.json
+bot_execution.log
+.env
+.idea/
+.vscode/

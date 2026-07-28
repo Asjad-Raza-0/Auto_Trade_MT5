@@ -1,0 +1,54 @@
+{
+  "general": {
+    "symbols": [
+      "XAUUSD",
+      "EURUSD",
+      "USDJPY",
+      "GBPUSD",
+      "AUDUSD",
+      "USDCAD",
+      "USDCHF",
+      "EURGBP"
+    ],
+    "scan_interval_seconds": 60,
+    "strategy_name": "trident_v2",
+    "data_provider": "twelvedata",
+    "account_balance": 10000.0,
+    "risk_percent": 1.0,
+    "state_persistence_file": "bot_state.json"
+  },
+  "twelvedata": {
+    "api_key": "YOUR_TWELVEDATA_API_KEY",
+    "rate_limit_pause_seconds": 8
+  },
+  "yfinance": {
+    "symbol_mapping": {
+      "XAUUSD": "GC=F",
+      "EURUSD": "EURUSD=X",
+      "USDJPY": "JPY=X",
+      "GBPUSD": "GBPUSD=X",
+      "AUDUSD": "AUDUSD=X",
+      "USDCAD": "CAD=X",
+      "USDCHF": "CHF=X",
+      "EURGBP": "EURGBP=X"
+    }
+  },
+  "telegram": {
+    "enabled": true,
+    "bot_token": "YOUR_TELEGRAM_BOT_TOKEN",
+    "chat_id": "YOUR_TELEGRAM_CHAT_ID"
+  },
+  "discord": {
+    "enabled": false,
+    "webhook_url": "YOUR_DISCORD_WEBHOOK_URL"
+  },
+  "strategy_parameters": {
+    "doji_threshold": 0.10,
+    "ema_periods": [5, 9, 13, 21, 200],
+    "session_start_ny": "03:00",
+    "session_end_ny": "06:30",
+    "session_timezone": "America/New_York",
+    "max_stop_gold_points": 600.0,
+    "max_stop_forex_pips": 100.0
+  }
+}

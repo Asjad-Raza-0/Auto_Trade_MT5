@@ -1,0 +1,17 @@
+[Unit]
+Description=TG Capital London EMA Stack + FVG Trident Trading Alert Bot Service
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/tgcapital-bot
+ExecStart=/usr/bin/python3 -m python_bot.main
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=tgcapital-bot
+
+[Install]
+WantedBy=multi-user.target

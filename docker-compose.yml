@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  trident-bot:
+    build: .
+    container_name: tgcapital_trident_bot
+    restart: always
+    volumes:
+      - ./config.json:/app/config.json
+      - ./bot_state.json:/app/bot_state.json
+      - ./bot_execution.log:/app/bot_execution.log
+    environment:
+      - TWELVEDATA_API_KEY=${TWELVEDATA_API_KEY}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
