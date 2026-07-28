@@ -42,6 +42,45 @@ This project provides a **Dual Implementation**:
 
 ---
 
+## 🔌 How to Switch or Add a New Strategy (Plug-and-Play AI Guide)
+
+The Python Alert Engine uses a **Plug-and-Play Strategy Architecture**. Any future AI/LLM assistant (or developer) can replace or add a new trading strategy in **2 easy steps**:
+
+### 1️⃣ Create your new Strategy file:
+Add `python_bot/strategies/your_strategy.py` subclassing `BaseStrategy`:
+```python
+from python_bot.strategies.base_strategy import BaseStrategy
+
+class YourNewStrategy(BaseStrategy):
+    @property
+    def name(self) -> str:
+        return "your_strategy_name"
+
+    def evaluate_daily_filter(self, symbol, df_daily):
+        return True, "Daily OK"
+
+    def evaluate_signal(self, symbol, df_daily, df_m30, context):
+        # Implement custom entry setup rules here
+        return None, "No setup"
+```
+
+### 2️⃣ Register & Activate:
+* Register in `python_bot/strategies/__init__.py`:
+  ```python
+  from python_bot.strategies.your_strategy import YourNewStrategy
+  register_strategy("your_strategy_name", YourNewStrategy)
+  ```
+* Change strategy name in `config.json`:
+  ```json
+  "general": {
+    "strategy_name": "your_strategy_name"
+  }
+  ```
+
+That's all! The engine, GitHub Actions scanner, state machine, and Telegram alerts automatically adapt to your new strategy!
+
+---
+
 ## Project Structure
 
 ```

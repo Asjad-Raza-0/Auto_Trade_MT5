@@ -6,7 +6,7 @@ This repository provides an institutional-grade, modular trading alert system an
 The codebase is built with dual implementation:
 1. **Python Alert Bot Engine** (Optimized for 24/7 deployment via GitHub Actions Free Cloud Runner or VPS):
    - Automated 24/7 market scanner running via `.github/workflows/alert_bot.yml` every 5 minutes.
-   - Modular Strategy Architecture (`BaseStrategy` interface) allowing seamless strategy swapping/extension.
+   - Modular Strategy Architecture (`BaseStrategy` & `STRATEGY_REGISTRY`) allowing instant strategy swapping/extension.
    - Multi-provider market data system (TwelveData API, YFinance, MetaTrader 5 / MetaAPI).
    - Async scanner, State Machine per symbol, Telegram/Discord instant alerts with rich formatting.
    - Automated timezone & DST conversion (America/New_York session window: 03:00 - 06:30).
@@ -14,6 +14,49 @@ The codebase is built with dual implementation:
 2. **MQL5 EA Suite** (MetaTrader 5 Native):
    - Fully modular MQL5 architecture following SOLID principles across 17+ `.mqh` files and `TGCapitalEA.mq5`.
    - Embedded Telegram WebRequest notification capability.
+
+---
+
+## 🔌 How AI / LLMs (or Developers) Can Add or Swap Strategies Instantly
+
+The Python engine features a **Plug-and-Play Strategy Architecture**. To switch to a completely new strategy (e.g., *ICT Silver Bullet*, *RSI Mean Reversion*, *MACD Breakout*), follow these **2 simple steps**:
+
+### Step 1: Create a new Strategy File in `python_bot/strategies/`
+Inherit from `BaseStrategy` and implement `evaluate_daily_filter` and `evaluate_signal`:
+
+```python
+# python_bot/strategies/my_new_strategy.py
+from python_bot.strategies.base_strategy import BaseStrategy
+from python_bot.models import TradeSignal, SymbolContext
+
+class MyNewStrategy(BaseStrategy):
+    @property
+    def name(self) -> str:
+        return "my_new_strategy"
+
+    def evaluate_daily_filter(self, symbol, df_daily):
+        return True, "Daily trend OK"
+
+    def evaluate_signal(self, symbol, df_daily, df_m30, context):
+        # Your custom setup logic here
+        return None, "No setup"
+```
+
+### Step 2: Register & Select in `config.json`
+In `python_bot/strategies/__init__.py`:
+```python
+from python_bot.strategies.my_new_strategy import MyNewStrategy
+register_strategy("my_new_strategy", MyNewStrategy)
+```
+
+In `config.json`:
+```json
+"general": {
+  "strategy_name": "my_new_strategy"
+}
+```
+
+That's it! The `MarketEngine`, `GitHub Actions` runner, risk manager, and notifier channels will automatically run your new strategy.
 
 ---
 

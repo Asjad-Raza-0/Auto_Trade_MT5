@@ -9,8 +9,7 @@ from python_bot.models import TradeSignal, SymbolState
 from python_bot.core.session_manager import SessionManager
 from python_bot.core.risk_manager import RiskManager
 from python_bot.core.state_machine import StateMachineManager
-from python_bot.strategies.base_strategy import BaseStrategy
-from python_bot.strategies.trident_strategy import TridentStrategy
+from python_bot.strategies import BaseStrategy, TridentStrategy, get_strategy
 from python_bot.data_providers.base_provider import BaseDataProvider
 from python_bot.data_providers.twelvedata_provider import TwelveDataProvider
 from python_bot.data_providers.yfinance_provider import YFinanceProvider
@@ -46,11 +45,12 @@ class MarketEngine:
             persistence_file=config.state_persistence_file
         )
 
-        # Initialize Strategy
-        self.strategy = strategy or TridentStrategy(
+        # Initialize Strategy dynamically via Factory
+        self.strategy = strategy or get_strategy(
+            strategy_name=config.strategy_name,
             risk_manager=self.risk_mgr,
             session_manager=self.session_mgr,
-            doji_threshold=config.strategy_params.get("doji_threshold", 0.10)
+            strategy_params=config.strategy_params
         )
 
         # Initialize Data Provider
