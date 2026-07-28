@@ -1,0 +1,49 @@
+name: TG Capital Trading Alert Bot Scanner
+
+on:
+  schedule:
+    # Run every 5 minutes Monday to Friday
+    - cron: '*/5 * * * 1-5'
+  workflow_dispatch: # Allows manual trigger from GitHub UI anytime
+
+jobs:
+  scan_market:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Restore Bot State Cache
+        uses: actions/cache@v4
+        with:
+          path: bot_state.json
+          key: bot-state-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            bot-state-${{ runner.os }}-
+
+      - name: Execute Strategy Scan Cycle
+        env:
+          TWELVEDATA_API_KEY: ${{ secrets.TWELVEDATA_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          python -m python_bot.main --once
+
+      - name: Save Bot State Cache
+        uses: actions/cache@v4
+        with:
+          path: bot_state.json
+          key: bot-state-${{ runner.os }}-${{ github.run_id }}

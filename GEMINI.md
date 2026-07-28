@@ -4,7 +4,8 @@
 This repository provides an institutional-grade, modular trading alert system and MetaTrader 5 Expert Advisor implementing the **TG Capital London EMA Stack + FVG Trident Strategy v2.0**.
 
 The codebase is built with dual implementation:
-1. **Python Alert Bot Engine** (Optimized for 24/7 deployment on Oracle Free Linux VPS):
+1. **Python Alert Bot Engine** (Optimized for 24/7 deployment via GitHub Actions Free Cloud Runner or VPS):
+   - Automated 24/7 market scanner running via `.github/workflows/alert_bot.yml` every 5 minutes.
    - Modular Strategy Architecture (`BaseStrategy` interface) allowing seamless strategy swapping/extension.
    - Multi-provider market data system (TwelveData API, YFinance, MetaTrader 5 / MetaAPI).
    - Async scanner, State Machine per symbol, Telegram/Discord instant alerts with rich formatting.

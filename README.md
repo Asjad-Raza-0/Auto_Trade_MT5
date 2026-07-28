@@ -3,7 +3,7 @@
 Institutional-grade, modular trading alert bot and MetaTrader 5 Expert Advisor implementing the **TG Capital London EMA Stack + FVG Trident Strategy v2.0**.
 
 This project provides a **Dual Implementation**:
-1. **Python 3 Alert Bot Engine** – Built for 24/7 background operation on Linux VPS servers (e.g. **Oracle Cloud Free Tier**). Features a pluggable strategy pattern (`BaseStrategy`), multi-provider data feeds (TwelveData & YFinance), per-symbol state machine persistence, and instant Telegram/Discord alerts.
+1. **Python 3 Alert Bot Engine** – Built for 24/7 background operation via **GitHub Actions** (100% Free, Zero VPS/Credit Card required) or Linux VPS. Features a pluggable strategy pattern (`BaseStrategy`), multi-provider data feeds (TwelveData & YFinance), per-symbol state machine persistence, and instant Telegram/Discord alerts.
 2. **MetaTrader 5 MQL5 EA Suite** – Native MQL5 Expert Advisor codebase adhering strictly to SOLID OOP principles across 17+ `.mqh` files and `TGCapitalEA.mq5`, complete with WebRequest Telegram notifications.
 
 ---
