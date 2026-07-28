@@ -2,8 +2,21 @@ import os
 import json
 from typing import Dict, Any, List, Optional
 
+def load_dotenv(env_path: str = ".env"):
+    if os.path.exists(env_path):
+        with open(env_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    k = k.strip()
+                    v = v.strip().strip("'").strip('"')
+                    if k:
+                        os.environ[k] = v
+
 class Config:
-    def __init__(self, config_file: str = "config.json"):
+    def __init__(self, config_file: str = "config.json", env_file: str = ".env"):
+        load_dotenv(env_file)
         self.config_file = config_file
         self.data: Dict[str, Any] = {}
         self.load()
