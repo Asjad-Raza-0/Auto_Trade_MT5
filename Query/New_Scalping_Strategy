@@ -1,0 +1,121 @@
+This 1-minute scalping strategy is designed for high-frequency trading with a focus on rapid execution (typically 30-minute sessions) and high risk-to-reward ratios [1].
+
+### I. Strategy Overview
+*   Primary Timeframe: 1-minute (1m) [2].
+*   Directional Timeframe: 5-minute (5m) [1, 2].
+*   Trade Duration: Fast scalp (aim to be done within 30 minutes) [1].
+*   Asset Class: Mentions US30, but applicable to others [3].
+
+---
+
+### II. Step 1: Establish Market Bias (5-Minute Chart)
+Before looking for entries, you must identify the higher-timeframe direction and key psychological zones.
+1.  Identify Support/Resistance: Look for areas where price has touched at least 3-4 times and shown exhaustion [2].
+2.  Determine Direction:
+    *   Bullish Bias: Price is reacting off a strong 5m support and starting to push upward [2].
+    *   Bearish Bias: Price is reacting off a strong 5m resistance (identified by multiple large wicks or failed breakouts) [4].
+3.  Confirmation of Strength: Look for evidence that sellers/buyers are "getting tired" at these zones before switching timeframes [2].
+
+---
+
+### III. Step 2: Market Structure Alignment (1-Minute Chart)
+Once the 5m bias is set, switch to the 1m chart to find a structural shift.
+*   For Long (Buy) Positions: Wait for the 1m chart to show a sequence of higher highs (HH) followed by higher lows (HL) [5, 6].
+*   For Short (Sell) Positions: Wait for the 1m chart to show a sequence of lower highs (LH) and lower lows (LL) [4, 7].
+*   The Breakout Requirement: Do not enter until a new candle takes out the previous high (for buys) or low (for sells) to confirm the market structure has officially switched [5, 6].
+
+---
+
+### IV. Step 3: Entry Criteria & Confirmations
+The strategy relies on "Three Confirmations" to move a trade from a 50/50 chance to a 75-80% success probability [8].
+
+Entry Triggers (Any combination of these):
+1.  S/R Breakout: A candle closes above a 1m resistance (for buys) or below a 1m support (for sells) [4-6].
+2.  Trendline Breakout: A clear 1m trendline is broken in the direction of the 5m bias [4].
+3.  Retest (Optional but High Probability): Price breaks a zone, then returns to retest that broken zone as new support/resistance before continuing [7].
+
+Algorithm Logic for Entry:
+*   IF 5m Bias = Bullish AND 1m Structure = Bullish (HH/HL) AND 1m Resistance is broken THEN Enter Long [6].
+*   IF 5m Bias = Bearish AND 1m Trendline is broken AND 1m Support is broken THEN Enter Short [4, 8].
+
+---
+
+### V. Step 4: Risk Management & Exit Strategy
+*   Stop Loss (SL): Use a "nice tight stop loss" placed just below the 1m structure low (for buys) or above the 1m structure high (for sells) [6, 8].
+*   Take Profit (TP): Target a minimum Risk-to-Reward ratio of 1:3, though 1:5 is preferred if the momentum is strong [8, 9].
+*   Trade Management:
+    *   Zone-Based Exits: Do not just look at dollar amounts; look for the next 1m support/resistance zone. If price reacts strongly at a zone before hitting TP, consider closing [3, 9].
+    *   Break Even: Move SL to break even once price clears the first "secondary high/low" or a significant 1m zone [9].
+    *   Scaling: If price breaks a second support/resistance level in your direction, you may add a second position (scaling in) to maximize profit [7].
+
+---
+
+### VI. Summary Logic for Algo Development
+| Component | Requirement |
+| :--- | :--- |
+| Bias | Must match 5m support/resistance reaction [2, 4]. |
+| Structure | 1m must show clear HH/HL (Long) or LH/LL (Short) [5]. |
+| Trigger | 1m Candle Close outside of S/R or Trendline [4, 5]. |
+| Confidence | Multiple confirmations (e.g., Trendline break + S/R break) = Higher Probability [8]. |
+| Execution | Exit at 1:3 RR or when price hits a major opposing 1m zone [8, 9]. |
+
+------------------------------------------------
+Detailed Plan
+------------------------------------------------
+
+To build a precise algorithm for this 1-minute scalping strategy, you must strictly follow a hierarchy of confirmations that filter high-probability entries from noise. The strategy is designed to be executed within a 30-minute window every day [1].
+
+### Module 1: Higher Timeframe (HTF) Bias Setup
+Timeframe: 5-Minute (5m)
+*   Identify Critical Zones: Look for Support or Resistance levels that have at least 3 to 4 touches [2].
+*   Identify Exhaustion:
+    *   Bullish Bias: Price reaches 5m Support, shows "exhaustion" (sellers getting tired), and starts pushing upward [2].
+    *   Bearish Bias: Price reaches 5m Resistance, marked by huge wicks that cannot break past the zone, indicating price is bearish [3].
+*   Output: The HTF Bias is established only after price solidifies its reaction at these zones and begins moving in the opposite direction [2, 3].
+
+### Module 2: Market Structure Alignment (LTF)
+Timeframe: 1-Minute (1m)
+Once the 5m bias is set, look for structural confirmation on the 1m chart.
+*   Long Setup: Identify a sequence of Higher Highs (HH) and Higher Lows (HL) [4].
+*   Short Setup: Identify a sequence of Lower Highs (LH) and Lower Lows (LL) [5].
+*   Structure Confirmation Trigger: You must wait for a new candle to officially take out the previous high (for longs) or previous low (for shorts). Entry is prohibited until the 1m structure officially switches and takes out these extremes [4, 5].
+
+### Module 3: The "Three Confirmation" Entry Logic
+To move the trade probability from a 50/50 "coin flip" to a 75-80% success rate, the algorithm must check for three concurrent confirmations [6]:
+1.  Confirmation 1 (HTF): Price is reacting off a 5m Support or Resistance zone [6].
+2.  Confirmation 2 (Trendline): A clear 1m trendline has been broken [3, 6].
+3.  Confirmation 3 (Breakout): A 1m support or resistance level (market structure) is broken simultaneously with the trendline [3, 6].
+
+Entry Execution: Enter a position immediately upon a 1m candle close that breaks these zones [7].
+
+### Module 4: Trade Management & Scaling
+*   Stop Loss (SL): Use a "nice tight stop loss" placed just outside the immediate 1m structure (below the support for longs; above the resistance for shorts) [5, 6].
+*   Take Profit (TP) Targets:
+    *   Base Target: 1:3 Risk-to-Reward ratio [6, 8].
+    *   Extended Target: 1:5 Risk-to-Reward ratio [6, 8].
+*   Dynamic Exit Logic: Do not exit based on dollar amounts. Exit when price reaches the next support or resistance zone on the chart and shows a reaction [8, 9].
+*   Breakeven Rule: Move the SL to the entry price (Breakeven) once the price clears the "secondary highs/lows" or significant 1m zones [8].
+*   Scaling In: If the first trade is running in profit and price breaks another support/resistance zone and retests it, a second position can be opened to maximize gains [7].
+
+### Module 5: Algorithmic Logic Summary
+IF (Timeframe == 5m AND Price touches S/R Zone >= 3 times AND Rejection Wicks == True) THEN:
+    Set Directional_Bias (Long or Short)
+    SWITCH TO (Timeframe == 1m)
+    
+    IF (Directional_Bias == Long):
+        WAIT FOR (HH/HL Pattern AND 1m Resistance Breakout AND Trendline Breakout)
+        ENTRY: Buy at 1m Candle Close above Resistance
+        SL: Below HL
+        TP: 1:3 RR OR Next 1m Resistance Zone
+        
+    IF (Directional_Bias == Short):
+        WAIT FOR (LL/LH Pattern AND 1m Support Breakout AND Trendline Breakout)
+        ENTRY: Sell at 1m Candle Close below Support
+        SL: Above LH
+        TP: 1:3 RR OR Next 1m Support Zone
+        
+    MANAGEMENT: 
+        IF (Price reaches Secondary Zone) THEN: Move SL to Breakeven
+        IF (Price breaks additional 1m Zone) THEN: SCALE IN (New Position)
+ 
+The algorithm should prioritize candle structure over all other indicators to ensure the market has officially shifted before execution [4].

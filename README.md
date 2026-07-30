@@ -85,7 +85,7 @@ That's all! The engine, GitHub Actions scanner, state machine, and Telegram aler
 
 ```
 .
-├── GEMINI.md                        # Project architecture & development log
+├── CLAUDE.md                        # Project architecture & development log
 ├── README.md                        # Complete user & deployment guide
 ├── config.json                      # Bot parameters, symbols, and API keys
 ├── requirements.txt                 # Python dependencies

@@ -1,0 +1,360 @@
+{
+  "communities": {
+    "0": [
+      "abc",
+      "python_bot_data_providers_base_provider",
+      "python_bot_data_providers_base_provider_basedataprovider",
+      "python_bot_data_providers_base_provider_basedataprovider_get_candles",
+      "python_bot_data_providers_base_provider_basedataprovider_name",
+      "python_bot_data_providers_base_provider_py_dataframe",
+      "python_bot_data_providers_base_provider_rationale_17",
+      "python_bot_data_providers_base_provider_rationale_6",
+      "python_bot_data_providers_init",
+      "python_bot_data_providers_init_rationale_1",
+      "python_bot_data_providers_mock_provider",
+      "python_bot_data_providers_mock_provider_mockdataprovider",
+      "python_bot_data_providers_mock_provider_mockdataprovider_get_candles",
+      "python_bot_data_providers_mock_provider_mockdataprovider_init",
+      "python_bot_data_providers_mock_provider_mockdataprovider_name",
+      "python_bot_data_providers_mock_provider_mockdataprovider_set_preset_data",
+      "python_bot_data_providers_mock_provider_py_dataframe",
+      "python_bot_data_providers_mock_provider_rationale_8",
+      "python_bot_data_providers_twelvedata_provider",
+      "python_bot_data_providers_twelvedata_provider_py_dataframe",
+      "python_bot_data_providers_twelvedata_provider_rationale_14",
+      "python_bot_data_providers_twelvedata_provider_twelvedataprovider",
+      "python_bot_data_providers_twelvedata_provider_twelvedataprovider_format_symbol",
+      "python_bot_data_providers_twelvedata_provider_twelvedataprovider_get_candles",
+      "python_bot_data_providers_twelvedata_provider_twelvedataprovider_init",
+      "python_bot_data_providers_twelvedata_provider_twelvedataprovider_map_interval",
+      "python_bot_data_providers_twelvedata_provider_twelvedataprovider_name",
+      "python_bot_data_providers_yfinance_provider",
+      "python_bot_data_providers_yfinance_provider_py_dataframe",
+      "python_bot_data_providers_yfinance_provider_rationale_21",
+      "python_bot_data_providers_yfinance_provider_yfinanceprovider",
+      "python_bot_data_providers_yfinance_provider_yfinanceprovider_get_candles",
+      "python_bot_data_providers_yfinance_provider_yfinanceprovider_init",
+      "python_bot_data_providers_yfinance_provider_yfinanceprovider_name",
+      "tests_test_data_providers",
+      "tests_test_data_providers_test_mock_data_provider"
+    ],
+    "1": [
+      "enum",
+      "python_bot_core_risk_manager",
+      "python_bot_core_state_machine",
+      "python_bot_core_state_machine_rationale_10",
+      "python_bot_core_state_machine_rationale_40",
+      "python_bot_core_state_machine_statemachinemanager",
+      "python_bot_core_state_machine_statemachinemanager_get_context",
+      "python_bot_core_state_machine_statemachinemanager_init",
+      "python_bot_core_state_machine_statemachinemanager_load_state",
+      "python_bot_core_state_machine_statemachinemanager_reset_symbol",
+      "python_bot_core_state_machine_statemachinemanager_save_state",
+      "python_bot_core_state_machine_statemachinemanager_set_active_fvg",
+      "python_bot_core_state_machine_statemachinemanager_set_state",
+      "python_bot_models",
+      "python_bot_models_candle",
+      "python_bot_models_candle_is_doji",
+      "python_bot_models_confirmationpattern",
+      "python_bot_models_dojipattern",
+      "python_bot_models_fvg",
+      "python_bot_models_py_any",
+      "python_bot_models_symbolcontext",
+      "python_bot_models_symbolcontext_from_dict",
+      "python_bot_models_symbolcontext_to_dict",
+      "python_bot_models_symbolstate",
+      "python_bot_models_tradesignal_to_dict",
+      "python_bot_strategies_trident_strategy",
+      "str",
+      "tests_test_state_machine",
+      "tests_test_state_machine_test_state_machine_transitions_and_persistence",
+      "tests_test_trident_strategy",
+      "tests_test_trident_strategy_create_mock_daily_df",
+      "tests_test_trident_strategy_py_dataframe",
+      "tests_test_trident_strategy_rationale_13",
+      "tests_test_trident_strategy_test_trident_strategy_evaluation"
+    ],
+    "2": [
+      "config_json",
+      "github_actions_workflow",
+      "python_bot_config",
+      "python_bot_config_config",
+      "python_bot_config_config_account_balance",
+      "python_bot_config_config_data_provider_name",
+      "python_bot_config_config_defaults",
+      "python_bot_config_config_discord_enabled",
+      "python_bot_config_config_discord_webhook_url",
+      "python_bot_config_config_init",
+      "python_bot_config_config_load",
+      "python_bot_config_config_risk_percent",
+      "python_bot_config_config_scan_interval",
+      "python_bot_config_config_state_persistence_file",
+      "python_bot_config_config_strategy_name",
+      "python_bot_config_config_strategy_params",
+      "python_bot_config_config_symbols",
+      "python_bot_config_config_telegram_bot_token",
+      "python_bot_config_config_telegram_chat_id",
+      "python_bot_config_config_telegram_enabled",
+      "python_bot_config_config_twelvedata_api_key",
+      "python_bot_config_load_dotenv",
+      "python_bot_config_py_any",
+      "python_bot_core_engine_marketengine",
+      "python_bot_core_engine_marketengine_broadcast_signal",
+      "python_bot_core_engine_marketengine_run_scan_cycle",
+      "python_bot_core_engine_marketengine_start_async_loop",
+      "python_bot_core_engine_rationale_158",
+      "python_bot_core_engine_rationale_25",
+      "python_bot_core_engine_rationale_92",
+      "python_bot_main",
+      "python_bot_main_main",
+      "python_bot_main_parse_args"
+    ],
+    "3": [
+      "python_bot_core_engine",
+      "python_bot_models_tradesignal",
+      "python_bot_notifiers_base_notifier",
+      "python_bot_notifiers_base_notifier_basenotifier",
+      "python_bot_notifiers_base_notifier_basenotifier_name",
+      "python_bot_notifiers_base_notifier_basenotifier_send_signal",
+      "python_bot_notifiers_base_notifier_rationale_15",
+      "python_bot_notifiers_base_notifier_rationale_5",
+      "python_bot_notifiers_console_notifier",
+      "python_bot_notifiers_console_notifier_consolenotifier",
+      "python_bot_notifiers_console_notifier_consolenotifier_name",
+      "python_bot_notifiers_console_notifier_consolenotifier_send_signal",
+      "python_bot_notifiers_console_notifier_rationale_8",
+      "python_bot_notifiers_discord_notifier",
+      "python_bot_notifiers_discord_notifier_discordnotifier",
+      "python_bot_notifiers_discord_notifier_discordnotifier_init",
+      "python_bot_notifiers_discord_notifier_discordnotifier_name",
+      "python_bot_notifiers_discord_notifier_discordnotifier_send_signal",
+      "python_bot_notifiers_discord_notifier_rationale_9",
+      "python_bot_notifiers_init",
+      "python_bot_notifiers_init_rationale_1",
+      "python_bot_notifiers_telegram_notifier",
+      "python_bot_notifiers_telegram_notifier_rationale_9",
+      "python_bot_notifiers_telegram_notifier_telegramnotifier",
+      "python_bot_notifiers_telegram_notifier_telegramnotifier_format_message",
+      "python_bot_notifiers_telegram_notifier_telegramnotifier_init",
+      "python_bot_notifiers_telegram_notifier_telegramnotifier_name",
+      "python_bot_notifiers_telegram_notifier_telegramnotifier_send_signal"
+    ],
+    "4": [
+      "python_bot_core_engine_marketengine_init",
+      "python_bot_strategies_base_strategy",
+      "python_bot_strategies_base_strategy_basestrategy",
+      "python_bot_strategies_base_strategy_basestrategy_evaluate_daily_filter",
+      "python_bot_strategies_base_strategy_basestrategy_evaluate_signal",
+      "python_bot_strategies_base_strategy_basestrategy_name",
+      "python_bot_strategies_base_strategy_py_dataframe",
+      "python_bot_strategies_base_strategy_rationale_15",
+      "python_bot_strategies_base_strategy_rationale_20",
+      "python_bot_strategies_base_strategy_rationale_34",
+      "python_bot_strategies_base_strategy_rationale_7",
+      "python_bot_strategies_init",
+      "python_bot_strategies_init_get_strategy",
+      "python_bot_strategies_init_py_any",
+      "python_bot_strategies_init_rationale_1",
+      "python_bot_strategies_init_rationale_17",
+      "python_bot_strategies_init_rationale_26",
+      "python_bot_strategies_init_register_strategy"
+    ],
+    "5": [
+      "python_bot_core_session_manager",
+      "python_bot_core_session_manager_py_datetime",
+      "python_bot_core_session_manager_rationale_18",
+      "python_bot_core_session_manager_rationale_27",
+      "python_bot_core_session_manager_rationale_36",
+      "python_bot_core_session_manager_rationale_44",
+      "python_bot_core_session_manager_rationale_5",
+      "python_bot_core_session_manager_sessionmanager",
+      "python_bot_core_session_manager_sessionmanager_get_ny_now",
+      "python_bot_core_session_manager_sessionmanager_init",
+      "python_bot_core_session_manager_sessionmanager_is_dst_active",
+      "python_bot_core_session_manager_sessionmanager_is_in_session",
+      "python_bot_core_session_manager_sessionmanager_is_session_expired",
+      "tests_test_session_manager",
+      "tests_test_session_manager_test_session_manager_dst_detection",
+      "tests_test_session_manager_test_session_manager_in_session",
+      "tests_test_session_manager_test_session_manager_outside_session"
+    ],
+    "6": [
+      "python_bot_strategies_trident_strategy_calculate_ema",
+      "python_bot_strategies_trident_strategy_py_dataframe",
+      "python_bot_strategies_trident_strategy_py_datetime",
+      "python_bot_strategies_trident_strategy_rationale_120",
+      "python_bot_strategies_trident_strategy_rationale_16",
+      "python_bot_strategies_trident_strategy_rationale_20",
+      "python_bot_strategies_trident_strategy_rationale_35",
+      "python_bot_strategies_trident_strategy_rationale_73",
+      "python_bot_strategies_trident_strategy_tridentstrategy",
+      "python_bot_strategies_trident_strategy_tridentstrategy_detect_latest_fvg",
+      "python_bot_strategies_trident_strategy_tridentstrategy_evaluate_daily_filter",
+      "python_bot_strategies_trident_strategy_tridentstrategy_evaluate_signal",
+      "python_bot_strategies_trident_strategy_tridentstrategy_generate_fvg_id",
+      "python_bot_strategies_trident_strategy_tridentstrategy_init",
+      "python_bot_strategies_trident_strategy_tridentstrategy_name",
+      "series"
+    ],
+    "7": [
+      "python_bot_core_risk_manager_rationale_5",
+      "python_bot_core_risk_manager_rationale_60",
+      "python_bot_core_risk_manager_riskmanager",
+      "python_bot_core_risk_manager_riskmanager_calculate_lot_size",
+      "python_bot_core_risk_manager_riskmanager_calculate_stop_distance_points",
+      "python_bot_core_risk_manager_riskmanager_get_pip_size",
+      "python_bot_core_risk_manager_riskmanager_init",
+      "python_bot_core_risk_manager_riskmanager_is_gold",
+      "python_bot_core_risk_manager_riskmanager_validate_stop_distance",
+      "tests_test_risk_manager",
+      "tests_test_risk_manager_test_forex_stop_distance_and_lots",
+      "tests_test_risk_manager_test_gold_excessive_stop_rejection",
+      "tests_test_risk_manager_test_gold_stop_distance_and_lots"
+    ],
+    "8": [
+      "mql5_ea_include_fvgdetector",
+      "mql5_ea_include_riskmanager",
+      "mql5_ea_tgcapitalea",
+      "strategy_trident_v2"
+    ],
+    "9": [
+      "python_bot_core_init",
+      "python_bot_core_init_rationale_1"
+    ],
+    "10": [
+      "python_bot_init",
+      "python_bot_init_rationale_1"
+    ],
+    "11": [
+      "tests_init",
+      "tests_init_rationale_1"
+    ]
+  },
+  "cohesion": {
+    "0": 0.09206349206349207,
+    "1": 0.12477718360071301,
+    "2": 0.08143939393939394,
+    "3": 0.16137566137566137,
+    "4": 0.1437908496732026,
+    "5": 0.19852941176470587,
+    "6": 0.16666666666666666,
+    "7": 0.2692307692307692,
+    "8": 0.5,
+    "9": 1.0,
+    "10": 1.0,
+    "11": 1.0
+  },
+  "gods": [
+    {
+      "id": "python_bot_models_tradesignal",
+      "label": "TradeSignal",
+      "degree": 26
+    },
+    {
+      "id": "python_bot_config_config",
+      "label": "Config",
+      "degree": 23
+    },
+    {
+      "id": "python_bot_core_engine_marketengine",
+      "label": "MarketEngine",
+      "degree": 22
+    },
+    {
+      "id": "python_bot_strategies_trident_strategy_tridentstrategy",
+      "label": "TridentStrategy",
+      "degree": 21
+    },
+    {
+      "id": "python_bot_core_risk_manager_riskmanager",
+      "label": "RiskManager",
+      "degree": 20
+    },
+    {
+      "id": "python_bot_core_session_manager_sessionmanager",
+      "label": "SessionManager",
+      "degree": 19
+    },
+    {
+      "id": "python_bot_core_state_machine_statemachinemanager",
+      "label": "StateMachineManager",
+      "degree": 17
+    },
+    {
+      "id": "python_bot_notifiers_base_notifier_basenotifier",
+      "label": "BaseNotifier",
+      "degree": 16
+    },
+    {
+      "id": "python_bot_data_providers_base_provider_basedataprovider",
+      "label": "BaseDataProvider",
+      "degree": 15
+    },
+    {
+      "id": "python_bot_models_symbolcontext",
+      "label": "SymbolContext",
+      "degree": 15
+    }
+  ],
+  "surprises": [
+    {
+      "source": "test_forex_stop_distance_and_lots()",
+      "target": "RiskManager",
+      "source_files": [
+        "tests/test_risk_manager.py",
+        "python_bot/core/risk_manager.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `test_forex_stop_distance_and_lots()` unexpectedly reaches hub `RiskManager`"
+    },
+    {
+      "source": "test_gold_excessive_stop_rejection()",
+      "target": "RiskManager",
+      "source_files": [
+        "tests/test_risk_manager.py",
+        "python_bot/core/risk_manager.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `test_gold_excessive_stop_rejection()` unexpectedly reaches hub `RiskManager`"
+    },
+    {
+      "source": "test_gold_stop_distance_and_lots()",
+      "target": "RiskManager",
+      "source_files": [
+        "tests/test_risk_manager.py",
+        "python_bot/core/risk_manager.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `test_gold_stop_distance_and_lots()` unexpectedly reaches hub `RiskManager`"
+    },
+    {
+      "source": "test_trident_strategy_evaluation()",
+      "target": "RiskManager",
+      "source_files": [
+        "tests/test_trident_strategy.py",
+        "python_bot/core/risk_manager.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "test_session_manager_dst_detection()",
+      "target": "SessionManager",
+      "source_files": [
+        "tests/test_session_manager.py",
+        "python_bot/core/session_manager.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `test_session_manager_dst_detection()` unexpectedly reaches hub `SessionManager`"
+    }
+  ],
+  "tokens": {
+    "input": 11853,
+    "output": 1134
+  }
+}
