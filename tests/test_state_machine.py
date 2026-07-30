@@ -1,24 +1,65 @@
+"""Tests for the per-symbol context store and its JSON persistence."""
 import os
-import pytest
-from python_bot.models import SymbolState
+
 from python_bot.core.state_machine import StateMachineManager
+from python_bot.models import SymbolState
+
 
 def test_state_machine_transitions_and_persistence(tmp_path):
-    test_file = str(tmp_path / "test_state.json")
-    sm = StateMachineManager(symbols=["XAUUSD", "EURUSD"], persistence_file=test_file)
+    state_file = str(tmp_path / "test_state.json")
+    sm = StateMachineManager(symbols=["XAUUSD", "EURUSD"], persistence_file=state_file)
 
-    # Initial state
+    # Every symbol starts out scanning.
     ctx = sm.get_context("XAUUSD")
-    assert ctx.state == SymbolState.WAIT_FOR_DAILY_FILTER
+    assert ctx.state == SymbolState.SCANNING
 
-    # Transition
-    sm.set_state("XAUUSD", SymbolState.WAIT_FOR_DOJI, reason="Bullish FVG detected")
-    assert ctx.state == SymbolState.WAIT_FOR_DOJI
+    sm.set_state("XAUUSD", SymbolState.SETUP_FORMING, reason="HTF zone reached")
+    assert ctx.state == SymbolState.SETUP_FORMING
+    assert ctx.last_rejection_reason == "HTF zone reached"
 
-    # Verify persistent file creation
-    assert os.path.exists(test_file)
+    sm.save_state()
+    assert os.path.exists(state_file)
 
-    # Load into new manager
-    sm2 = StateMachineManager(symbols=["XAUUSD", "EURUSD"], persistence_file=test_file)
-    ctx2 = sm2.get_context("XAUUSD")
-    assert ctx2.state == SymbolState.WAIT_FOR_DOJI
+    # A fresh manager must restore the persisted state.
+    sm2 = StateMachineManager(symbols=["XAUUSD", "EURUSD"], persistence_file=state_file)
+    assert sm2.get_context("XAUUSD").state == SymbolState.SETUP_FORMING
+    assert sm2.get_context("EURUSD").state == SymbolState.SCANNING
+
+
+def test_reset_clears_setup_but_keeps_position_slot():
+    sm = StateMachineManager(symbols=["XAUUSD"], persistence_file="unused.json")
+    ctx = sm.get_context("XAUUSD")
+    ctx.strategy_data = {"zone": 39000.0}
+    sm.set_state("XAUUSD", SymbolState.SETUP_FORMING)
+
+    sm.reset_symbol("XAUUSD", reason="daily filter flipped")
+    assert ctx.state == SymbolState.SCANNING
+    assert ctx.strategy_data == {}
+
+
+def test_unknown_symbol_gets_a_fresh_context():
+    sm = StateMachineManager(symbols=["XAUUSD"], persistence_file="unused.json")
+    ctx = sm.get_context("GBPUSD")
+    assert ctx.symbol == "GBPUSD"
+    assert ctx.state == SymbolState.SCANNING
+
+
+def test_corrupt_state_file_falls_back_to_clean_state(tmp_path):
+    state_file = tmp_path / "corrupt.json"
+    state_file.write_text("{ this is not json", encoding="utf-8")
+
+    sm = StateMachineManager(symbols=["XAUUSD"], persistence_file=str(state_file))
+    assert sm.get_context("XAUUSD").state == SymbolState.SCANNING
+
+
+def test_roll_day_resets_per_symbol_counters():
+    sm = StateMachineManager(symbols=["XAUUSD"], persistence_file="unused.json")
+    ctx = sm.get_context("XAUUSD")
+    ctx.trading_day = "2026-07-29"
+    ctx.trades_today = 3
+    ctx.realized_pnl_today = -120.0
+
+    assert sm.roll_day("2026-07-30") is True
+    assert ctx.trades_today == 0
+    assert ctx.realized_pnl_today == 0.0
+    assert sm.roll_day("2026-07-30") is False

@@ -157,7 +157,7 @@ class OneMinuteScalpStrategy(BaseStrategy):
         df_ltf = data.get("ltf")
 
         min_htf = 2 * self.swing_lookback_htf + self.exhaustion_lookback + self.atr_period
-        min_ltf = 2 * self.swing_lookback_ltf + self.trendline_lookback
+        min_ltf = max(self.atr_period + 5, 2 * self.swing_lookback_ltf + 20)
 
         if df_htf is None or len(df_htf) < min_htf:
             return None, f"insufficient {self.htf} bars (need >= {min_htf}, have {0 if df_htf is None else len(df_htf)})"
@@ -319,9 +319,16 @@ class OneMinuteScalpStrategy(BaseStrategy):
         if not swings:
             return Direction.NONE, None, f"no confirmed swings on {self.htf}"
 
-        price = float(df_htf["close"].iloc[-1])
         tolerance = atr_htf * self.zone_cluster_atr_mult
         proximity = atr_htf * self.zone_proximity_atr_mult
+
+        # Proximity is measured from how far price REACHED into the zone recently,
+        # not from the last close. After a rejection the close can sit an ATR or
+        # more above a support the candle's wick clearly tagged — that is exactly
+        # the setup we are looking for, so probing with the close would miss it.
+        window = df_htf.iloc[-self.exhaustion_lookback:] if self.exhaustion_lookback > 0 else df_htf
+        recent_low = float(window["low"].min())
+        recent_high = float(window["high"].max())
 
         supports = build_zones(
             df_htf, swings, ZoneKind.SUPPORT, tolerance, self.htf,
@@ -339,11 +346,15 @@ class OneMinuteScalpStrategy(BaseStrategy):
 
         notes: List[str] = []
         # Support reaction -> long bias; resistance reaction -> short bias.
-        for zones, direction in ((supports, Direction.LONG), (resistances, Direction.SHORT)):
-            zone = find_active_zone(zones, price, proximity)
+        for zones, direction, probe in (
+            (supports, Direction.LONG, recent_low),
+            (resistances, Direction.SHORT, recent_high),
+        ):
+            zone = find_active_zone(zones, probe, proximity)
             if zone is None:
                 notes.append(
-                    f"price {price:.5f} not within {proximity:.5f} of any qualifying "
+                    f"recent {'low' if direction is Direction.LONG else 'high'} {probe:.5f} "
+                    f"not within {proximity:.5f} of any qualifying "
                     f"{'support' if direction is Direction.LONG else 'resistance'}"
                 )
                 continue

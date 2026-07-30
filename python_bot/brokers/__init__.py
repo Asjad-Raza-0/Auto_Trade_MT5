@@ -33,7 +33,7 @@ def build_broker(name: str, config: Dict[str, Any]) -> BaseBroker:
     ``mt5``   -> keys: login, password, server, terminal_path, magic_number,
                  deviation_points
     ``paper`` -> keys: balance, currency, data_provider, magic_number,
-                 exit_check_timeframe, spread_ticks
+                 exit_check_timeframe, spread_ticks, symbols
     """
     key = (name or "").strip().lower()
     if key not in BROKER_REGISTRY:

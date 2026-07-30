@@ -1,255 +1,117 @@
-# TG Capital Trading Alert Bot & MQL5 EA Suite
+# 1-Minute Structure Scalper — MetaTrader 5 Auto-Trading Bot
 
-Institutional-grade, modular trading alert bot and MetaTrader 5 Expert Advisor implementing the **TG Capital London EMA Stack + FVG Trident Strategy v2.0**.
+A modular Python auto-trading bot for MetaTrader 5 implementing a **1-minute
+structure scalping strategy**: 5-minute zone-reaction bias, 1-minute
+structure-break entries, and automated trade management (partial take-profit,
+breakeven, time stop). Trades **live through MT5** or fully simulated through a
+built-in **paper broker** — no MT5 or Windows required for testing.
 
-This project provides a **Dual Implementation**:
-1. **Python 3 Alert Bot Engine** – Built for 24/7 background operation via **GitHub Actions** (100% Free, Zero VPS/Credit Card required) or Linux VPS. Features a pluggable strategy pattern (`BaseStrategy`), multi-provider data feeds (TwelveData & YFinance), per-symbol state machine persistence, and instant Telegram/Discord alerts.
-2. **MetaTrader 5 MQL5 EA Suite** – Native MQL5 Expert Advisor codebase adhering strictly to SOLID OOP principles across 17+ `.mqh` files and `TGCapitalEA.mq5`, complete with WebRequest Telegram notifications.
+- **Strategy**: `scalp_1m_v1` — both long and short setups
+- **Default symbols**: US30, XAUUSD (configurable)
+- **Alerts**: Telegram, Discord, console
+- **Restart-safe**: persisted state + orphan position re-adoption by magic number
 
----
-
-## Strategy Specification: TG Capital London EMA Stack + FVG Trident Strategy v2.0
-
-### Core Rules
-- **Timeframes**: Trend = Daily (1D), Execution = M30 (30-minute).
-- **Trading Session**: 03:00 to 06:30 `America/New_York` (NY Time). Automatic DST handling. Pending orders expire at exactly 06:30 NY time.
-- **Direction**: Long Only (Buy Limit / Bullish setups only).
-- **Default Symbols**: `XAUUSD`, `EURUSD`, `USDJPY`, `GBPUSD`, `AUDUSD`, `USDCAD`, `USDCHF`, `EURGBP`.
-- **Multi-Symbol Priority Rule**: If multiple symbols produce entry signals on the same completed M30 candle, execute/alert ONLY for the **first valid symbol** based on the configured symbol list order.
-
-### Setup Logic
-1. **Daily Trend Filter**:
-   - Evaluated on completed Daily candles:
-     - `Close > EMA200`
-     - `EMA5 > EMA9 > EMA13 > EMA21` (calculated on Close price)
-2. **Bullish Fair Value Gap (FVG)**:
-   - Evaluated across 3 completed M30 candles: $A$ (oldest), $B$ (middle), $C$ (newest).
-   - Condition: `High(A) < Low(C)`.
-   - `FVG Top = Low(C)`, `FVG Bottom = High(A)`, `CE = (Top + Bottom) / 2`.
-   - Only newest FVG remains active; newer FVG replaces previous pending order.
-3. **Doji Candle**:
-   - Occurs AFTER FVG forms.
-   - `abs(Open - Close) <= Threshold * (High - Low)` (default threshold = 0.10).
-   - `Low(Doji) <= CE` AND `Close(Doji) > CE`. Uses first valid Doji.
-4. **Confirmation Candle**:
-   - IMMEDIATELY NEXT completed M30 candle after Doji.
-   - `Close(Confirmation) < High(Doji)`.
-5. **Entry & Stop Loss**:
-   - **Entry**: `BUY LIMIT` at `FVG Top`.
-   - **Stop Loss**: `Low(Candle B)` (of the FVG pattern).
-   - **Max Stop Distance**: Gold (XAUUSD) <= 600 points ($6.00), Forex <= 100 pips.
-   - **Risk Size**: 1% Account Balance default (floor lot size according to broker step/min lot limits).
+> **New here? Read [GUIDE.md](GUIDE.md)** — the step-by-step walkthrough from
+> offline tests → dry run → MT5 demo → live trading.
+>
+> **Architecture details live in [CLAUDE.md](CLAUDE.md).**
 
 ---
 
-## 🔌 How to Switch or Add a New Strategy (Plug-and-Play AI Guide)
+## Quick start
 
-The Python Alert Engine uses a **Plug-and-Play Strategy Architecture**. Any future AI/LLM assistant (or developer) can replace or add a new trading strategy in **2 easy steps**:
-
-### 1️⃣ Create your new Strategy file:
-Add `python_bot/strategies/your_strategy.py` subclassing `BaseStrategy`:
-```python
-from python_bot.strategies.base_strategy import BaseStrategy
-
-class YourNewStrategy(BaseStrategy):
-    @property
-    def name(self) -> str:
-        return "your_strategy_name"
-
-    def evaluate_daily_filter(self, symbol, df_daily):
-        return True, "Daily OK"
-
-    def evaluate_signal(self, symbol, df_daily, df_m30, context):
-        # Implement custom entry setup rules here
-        return None, "No setup"
-```
-
-### 2️⃣ Register & Activate:
-* Register in `python_bot/strategies/__init__.py`:
-  ```python
-  from python_bot.strategies.your_strategy import YourNewStrategy
-  register_strategy("your_strategy_name", YourNewStrategy)
-  ```
-* Change strategy name in `config.json`:
-  ```json
-  "general": {
-    "strategy_name": "your_strategy_name"
-  }
-  ```
-
-That's all! The engine, GitHub Actions scanner, state machine, and Telegram alerts automatically adapt to your new strategy!
-
----
-
-## Project Structure
-
-```
-.
-├── CLAUDE.md                        # Project architecture & development log
-├── README.md                        # Complete user & deployment guide
-├── config.json                      # Bot parameters, symbols, and API keys
-├── requirements.txt                 # Python dependencies
-├── pytest.ini                      # Test runner configuration
-├── Dockerfile                       # Container deployment spec
-├── docker-compose.yml              # Docker compose service definition
-├── tgcapital-bot.service            # Systemd service definition for Linux VPS
-│
-├── python_bot/                      # Python Trading Alert Bot Engine
-│   ├── main.py                      # CLI entrypoint runner
-│   ├── config.py                    # Settings parser
-│   ├── models.py                    # Data models (Candle, FVG, Signal, Context)
-│   ├── core/                        # Core bot engine modules
-│   │   ├── engine.py                # Async scanner & priority scheduler
-│   │   ├── session_manager.py       # NY Session 03:00 - 06:30 & DST converter
-│   │   ├── risk_manager.py          # Stop distance & lot calculation
-│   │   └── state_machine.py         # State machine & persistence manager
-│   ├── strategies/                  # Extensible Strategy Architecture
-│   │   ├── base_strategy.py         # Abstract Strategy Interface
-│   │   └── trident_strategy.py      # Trident Strategy implementation
-│   ├── data_providers/              # Data Provider Adapters
-│   │   ├── base_provider.py         # Abstract Data Provider Interface
-│   │   ├── twelvedata_provider.py   # TwelveData REST API adapter
-│   │   ├── yfinance_provider.py     # YFinance zero-cost fallback adapter
-│   │   └── mock_provider.py         # Mock data generator for testing
-│   └── notifiers/                   # Notification Channels
-│       ├── base_notifier.py         # Abstract Notifier Interface
-│       ├── telegram_notifier.py     # Telegram Bot API integration
-│       ├── discord_notifier.py      # Discord Webhook integration
-│       └── console_notifier.py     # Local console/log fallback
-│
-├── tests/                           # Pytest Test Suite
-│   ├── test_trident_strategy.py
-│   ├── test_data_providers.py
-│   ├── test_session_manager.py
-│   ├── test_state_machine.py
-│   └── test_risk_manager.py
-│
-└── mql5_ea/                          # MetaTrader 5 Expert Advisor Suite
-    ├── TGCapitalEA.mq5              # Main Expert Advisor file
-    └── Include/                     # Modular MQL5 headers
-        ├── Constants.mqh
-        ├── Enums.mqh
-        ├── Utilities.mqh
-        ├── Logger.mqh
-        ├── BrokerInfo.mqh
-        ├── DataCache.mqh
-        ├── SymbolManager.mqh
-        ├── SessionManager.mqh
-        ├── EMAFilter.mqh
-        ├── FVGDetector.mqh
-        ├── DojiDetector.mqh
-        ├── ConfirmationValidator.mqh
-        ├── RiskManager.mqh
-        ├── TradeManager.mqh
-        ├── VisualizationManager.mqh
-        ├── StateMachine.mqh
-        ├── Version.mqh
-        └── TelegramNotifier.mqh
-```
-
----
-
-## How to Change or Add New Strategies in the Future
-
-The Python bot is designed using the **Strategy Pattern**. To swap or add a new strategy:
-
-1. Create a new strategy class in `python_bot/strategies/` inheriting from `BaseStrategy`:
-```python
-from python_bot.strategies.base_strategy import BaseStrategy
-from python_bot.models import TradeSignal, SymbolContext
-
-class MyNewStrategy(BaseStrategy):
-    @property
-    def name(self) -> str:
-        return "my_new_strategy"
-
-    def evaluate_daily_filter(self, symbol: str, df_daily: pd.DataFrame):
-        # Your custom daily filter logic
-        return True, "Filter passed"
-
-    def evaluate_signal(self, symbol, df_daily, df_m30, context):
-        # Your custom entry signal logic
-        return signal, "Reason"
-```
-2. In `config.json`, change `"strategy_name": "my_new_strategy"`.
-
----
-
-## Deployment on Oracle Free VPS (Linux Ubuntu)
-
-### Step 1: Obtain Telegram Credentials
-1. Open Telegram and search for `@BotFather`.
-2. Send `/newbot` and follow instructions to get your **Bot Token**.
-3. Search for `@userinfobot` or add your bot to your channel/group to get your **Chat ID**.
-
-### Step 2: Configure `config.json`
-Edit `config.json`:
-```json
-{
-  "general": {
-    "data_provider": "twelvedata",
-    "account_balance": 10000.0,
-    "risk_percent": 1.0
-  },
-  "twelvedata": {
-    "api_key": "YOUR_TWELVEDATA_API_KEY"
-  },
-  "telegram": {
-    "enabled": true,
-    "bot_token": "123456789:ABCdef...",
-    "chat_id": "987654321"
-  }
-}
-```
-
-### Step 3: Run Setup Options on VPS
-
-#### Option A: Native Systemd Background Service (Recommended)
 ```bash
-# Clone repository
-git clone <your-repo-url> /home/ubuntu/tgcapital-bot
-cd /home/ubuntu/tgcapital-bot
+pip install -r requirements.txt
+copy .env.example .env        # then fill in Telegram (and later MT5) credentials
 
-# Install requirements
-python3 -m pip install -r requirements.txt
-
-# Test alert
-python3 -m python_bot.main --test-alert
-
-# Install systemd service
-sudo cp tgcapital-bot.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable tgcapital-bot
-sudo systemctl start tgcapital-bot
-
-# Check service status & logs
-sudo systemctl status tgcapital-bot
-journalctl -u tgcapital-bot -f
+python -m pytest tests/ -q                   # 45 offline tests — verify the code
+python python_bot/main.py --test-alert      # verify Telegram works
+python python_bot/main.py --dry-run --once  # one simulated scan cycle
+python python_bot/main.py --dry-run         # continuous simulated trading
+python python_bot/main.py                   # LIVE trading via MT5 (see GUIDE.md first!)
 ```
 
-#### Option B: Docker Container Deployment
-```bash
-cd /home/ubuntu/tgcapital-bot
-docker-compose up -d --build
-docker-compose logs -f
-```
+All CLI flags:
+
+| Flag | Purpose |
+|---|---|
+| `--dry-run` | Paper broker + free yfinance data — **no real orders** |
+| `--once` | One scan cycle, then exit |
+| `--list-symbols` | Show how logical symbol names resolve at your broker |
+| `--test-alert` | Send one test notification through every channel |
+| `--status` | Print account/symbol/position status as JSON |
+| `--close-all` | Close every position this bot owns, then exit |
+| `--strategy NAME` / `--symbols A,B` | Override config at launch |
+| `--config PATH` / `--env PATH` / `--log-level LEVEL` | Plumbing |
 
 ---
 
-## Running Unit Tests
-To run the automated test suite and confirm 0 errors:
-```bash
-python -m pytest -v
-```
+## The strategy in one paragraph
+
+On the 5-minute chart the bot finds support/resistance zones with at least 3
+touches and waits for price to reach one, get rejected (exhaustion wicks) and
+start moving away — that sets the directional bias. On the 1-minute chart the
+swing structure must agree (HH/HL for longs, LH/LL for shorts) and a candle must
+*close* through the last swing extreme. With at least 3 confirmations (zone
+reaction + structure break + trendline break and/or retest) it enters at market:
+stop just beyond the last 1-minute structure, 50% banked at 3R with the stop
+moved to breakeven, runner to 5R or the next opposing zone, everything flat
+after 30 minutes. Risk per trade is 1% of live balance, with daily
+trade-count and loss-percent circuit breakers. Every threshold is a
+`config.json -> strategy_parameters` key.
 
 ---
 
-## MetaTrader 5 MQL5 EA Setup Guide
+## Project structure
 
-1. Open MetaTrader 5 and click **File -> Open Data Folder**.
-2. Navigate to `MQL5/Experts/` and copy the contents of `mql5_ea/` into it:
-   - Copy `mql5_ea/TGCapitalEA.mq5` into `MQL5/Experts/`
-   - Copy `mql5_ea/Include/` directory into `MQL5/Experts/Include/` or `MQL5/Include/`
-3. Open MetaEditor (F4 in MT5), select `TGCapitalEA.mq5` and press **Compile (F7)**.
-4. Verify compilation finishes with **0 errors and 0 warnings**.
-5. Attach `TGCapitalEA` to any single chart (e.g. `XAUUSD M30`). It acts as a **one-chart multi-symbol scanner** for all configured symbols.
+```
+├── README.md / GUIDE.md / CLAUDE.md     # This file / go-live walkthrough / architecture
+├── config.json                          # All tunables: symbols, risk, strategy params
+├── .env.example                         # Secrets template (MT5, Telegram, Discord)
+├── requirements.txt / pytest.ini
+│
+├── python_bot/
+│   ├── main.py                          # CLI entrypoint
+│   ├── config.py                        # config.json + .env loader
+│   ├── models.py                        # Dataclasses & enums shared by every layer
+│   ├── analysis/                        # Pure price-action primitives:
+│   │                                    #   ATR, swings, zones, structure, trendlines
+│   ├── core/                            # Engine, position manager, risk manager,
+│   │                                    #   session filter, state persistence, symbol resolver
+│   ├── brokers/                         # "mt5" (live) and "paper" (simulation)
+│   ├── data_providers/                  # "broker", "yfinance", "twelvedata", "mock"
+│   ├── strategies/                      # "scalp_1m_v1" + plug-in registry
+│   └── notifiers/                       # Telegram, Discord, console fan-out
+│
+├── tests/                               # Offline pytest suite (45 tests)
+├── Query/                               # Strategy specification documents
+└── legacy/                              # Previous Trident-bot deployment artifacts
+```
+
+Every layer (strategy, broker, data feed, notifier) sits behind an abstract base
+class and a registry — swapping any of them is a config change, not an engine
+change.
+
+## Adding your own strategy
+
+1. Subclass `BaseStrategy` in `python_bot/strategies/your_strategy.py` and
+   implement `name`, `required_timeframes`, and
+   `evaluate(symbol, data, context) -> (TradeSignal | None, reason)`
+   (plus optional `manage_position(...)` for in-trade management).
+2. Register it in `python_bot/strategies/__init__.py`:
+   `register_strategy("your_name", YourStrategy)`.
+3. Select it: `config.json -> general.strategy_name`, or `--strategy your_name`.
+
+The engine, risk sizing, persistence and alert channels adapt automatically.
+
+---
+
+## Safety notes
+
+- The bot only manages positions carrying its **magic number**
+  (`mt5.magic_number`) — your manual trades on the same account are untouched.
+- Stopping the bot does **not** close trades; they keep their SL/TP on the
+  broker and are re-adopted on restart. Use `--close-all` to flatten.
+- Daily circuit breakers: max trades/day and max daily loss % halt trading
+  until the next day.
+- Start on a **demo account**. [GUIDE.md](GUIDE.md) is the checklist.

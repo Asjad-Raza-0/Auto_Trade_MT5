@@ -1,135 +1,281 @@
-import os
-import json
-from typing import Dict, Any, List, Optional
+"""
+Configuration loader.
 
-def load_dotenv(env_path: str = ".env"):
-    if os.path.exists(env_path):
-        with open(env_path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#") and "=" in line:
-                    k, v = line.split("=", 1)
-                    k = k.strip()
-                    v = v.strip().strip("'").strip('"')
-                    if k:
-                        os.environ[k] = v
+Precedence: environment variable > ``config.json`` > built-in default.
+Secrets (MT5 password, Telegram token) belong in ``.env``, never in
+``config.json`` — that file is meant to be committable.
+"""
+import json
+import logging
+import os
+from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
+
+
+def load_dotenv(env_path: str = ".env") -> None:
+    if not os.path.exists(env_path):
+        return
+    with open(env_path, "r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            key = key.strip()
+            if key:
+                os.environ[key] = value.strip().strip("'").strip('"')
+
+
+DEFAULTS: Dict[str, Any] = {
+    "general": {
+        "symbols": ["US30", "XAUUSD"],
+        "strategy_name": "scalp_1m_v1",
+        "broker": "mt5",
+        "data_provider": "broker",
+        "scan_interval_seconds": 15,
+        "state_persistence_file": "bot_state.json",
+        "log_file": "bot_execution.log",
+        "log_level": "INFO",
+    },
+    "mt5": {
+        "login": 0,
+        "password": "",
+        "server": "",
+        "terminal_path": "",
+        "magic_number": 250730,
+        "deviation_points": 20,
+        "auto_detect_symbols": True,
+        "symbol_overrides": {},
+    },
+    "risk": {
+        "risk_percent": 1.0,
+        "use_live_balance": True,
+        "account_balance_fallback": 10000.0,
+        "max_open_positions": 2,
+        "max_positions_per_symbol": 1,
+        "max_daily_trades": 6,
+        "max_daily_loss_percent": 3.0,
+        "min_risk_reward": 0.0,
+        "max_stop_points": {"US30": 3000.0, "XAUUSD": 600.0, "default": 1500.0},
+    },
+    "session": {
+        "enabled": False,
+        "start": "09:30",
+        "end": "10:00",
+        "timezone": "America/New_York",
+        "trade_days": [0, 1, 2, 3, 4],
+    },
+    "telegram": {
+        "enabled": True,
+        "bot_token": "",
+        "chat_id": "",
+        "notify_events": ["ENTRY", "PARTIAL_TP", "TP_HIT", "SL_HIT", "ERROR"],
+    },
+    "discord": {
+        "enabled": False,
+        "webhook_url": "",
+        "notify_events": ["ENTRY", "PARTIAL_TP", "TP_HIT", "SL_HIT", "ERROR"],
+    },
+    "console": {
+        "notify_events": None,   # null = log every event type
+    },
+    "twelvedata": {"api_key": "", "rate_limit_pause_seconds": 8},
+    "yfinance": {"symbol_mapping": {}},
+    "strategy_parameters": {},
+}
+
+
+def _deep_merge(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
+    merged = dict(base)
+    for key, value in (override or {}).items():
+        if isinstance(value, dict) and isinstance(merged.get(key), dict):
+            merged[key] = _deep_merge(merged[key], value)
+        else:
+            merged[key] = value
+    return merged
+
 
 class Config:
     def __init__(self, config_file: str = "config.json", env_file: str = ".env"):
         load_dotenv(env_file)
         self.config_file = config_file
-        self.data: Dict[str, Any] = {}
+        self.data: Dict[str, Any] = dict(DEFAULTS)
         self.load()
 
-    def load(self):
-        if os.path.exists(self.config_file):
-            with open(self.config_file, "r", encoding="utf-8") as f:
-                self.data = json.load(f)
-        else:
-            self.data = self._defaults()
+    def load(self) -> None:
+        if not os.path.exists(self.config_file):
+            logger.warning(
+                f"{self.config_file} not found — running on built-in defaults. "
+                f"Copy config.example.json to config.json to customise."
+            )
+            return
+        with open(self.config_file, "r", encoding="utf-8") as handle:
+            self.data = _deep_merge(DEFAULTS, json.load(handle))
 
-    def _defaults(self) -> Dict[str, Any]:
-        return {
-            "general": {
-                "symbols": ["XAUUSD", "EURUSD", "USDJPY", "GBPUSD", "AUDUSD", "USDCAD", "USDCHF", "EURGBP"],
-                "scan_interval_seconds": 60,
-                "strategy_name": "trident_v2",
-                "data_provider": "twelvedata",
-                "account_balance": 10000.0,
-                "risk_percent": 1.0,
-                "state_persistence_file": "bot_state.json"
-            },
-            "twelvedata": {
-                "api_key": os.getenv("TWELVEDATA_API_KEY", "YOUR_TWELVEDATA_API_KEY"),
-                "rate_limit_pause_seconds": 8
-            },
-            "yfinance": {
-                "symbol_mapping": {
-                    "XAUUSD": "GC=F",
-                    "EURUSD": "EURUSD=X",
-                    "USDJPY": "JPY=X",
-                    "GBPUSD": "GBPUSD=X",
-                    "AUDUSD": "AUDUSD=X",
-                    "USDCAD": "CAD=X",
-                    "USDCHF": "CHF=X",
-                    "EURGBP": "EURGBP=X"
-                }
-            },
-            "telegram": {
-                "enabled": True,
-                "bot_token": os.getenv("TELEGRAM_BOT_TOKEN", ""),
-                "chat_id": os.getenv("TELEGRAM_CHAT_ID", "")
-            },
-            "discord": {
-                "enabled": False,
-                "webhook_url": os.getenv("DISCORD_WEBHOOK_URL", "")
-            },
-            "strategy_parameters": {
-                "doji_threshold": 0.10,
-                "ema_periods": [5, 9, 13, 21, 200],
-                "session_start_ny": "03:00",
-                "session_end_ny": "06:30",
-                "session_timezone": "America/New_York",
-                "max_stop_gold_points": 600.0,
-                "max_stop_forex_pips": 100.0
-            }
-        }
+    # ------------------------------------------------------------------ access
+    def section(self, name: str) -> Dict[str, Any]:
+        value = self.data.get(name, {})
+        return value if isinstance(value, dict) else {}
 
+    def get(self, section: str, key: str, default: Any = None) -> Any:
+        return self.section(section).get(key, default)
+
+    # ----------------------------------------------------------------- general
     @property
     def symbols(self) -> List[str]:
-        return self.data.get("general", {}).get("symbols", ["XAUUSD", "EURUSD"])
-
-    @property
-    def scan_interval(self) -> int:
-        return self.data.get("general", {}).get("scan_interval_seconds", 60)
-
-    @property
-    def data_provider_name(self) -> str:
-        return self.data.get("general", {}).get("data_provider", "twelvedata")
+        return list(self.get("general", "symbols", ["US30", "XAUUSD"]))
 
     @property
     def strategy_name(self) -> str:
-        return self.data.get("general", {}).get("strategy_name", "trident_v2")
+        return str(self.get("general", "strategy_name", "scalp_1m_v1"))
 
     @property
-    def account_balance(self) -> float:
-        return float(self.data.get("general", {}).get("account_balance", 10000.0))
+    def broker_name(self) -> str:
+        return str(self.get("general", "broker", "mt5"))
 
     @property
-    def risk_percent(self) -> float:
-        return float(self.data.get("general", {}).get("risk_percent", 1.0))
+    def data_provider_name(self) -> str:
+        return str(self.get("general", "data_provider", "broker"))
+
+    @property
+    def scan_interval(self) -> int:
+        return int(self.get("general", "scan_interval_seconds", 15))
 
     @property
     def state_persistence_file(self) -> str:
-        return self.data.get("general", {}).get("state_persistence_file", "bot_state.json")
+        return str(self.get("general", "state_persistence_file", "bot_state.json"))
 
     @property
-    def twelvedata_api_key(self) -> str:
-        env_key = os.getenv("TWELVEDATA_API_KEY")
-        if env_key:
-            return env_key
-        return self.data.get("twelvedata", {}).get("api_key", "")
+    def log_file(self) -> str:
+        return str(self.get("general", "log_file", "bot_execution.log"))
 
     @property
-    def telegram_bot_token(self) -> str:
-        return os.getenv("TELEGRAM_BOT_TOKEN") or self.data.get("telegram", {}).get("bot_token", "")
-
-    @property
-    def telegram_chat_id(self) -> str:
-        return os.getenv("TELEGRAM_CHAT_ID") or self.data.get("telegram", {}).get("chat_id", "")
-
-    @property
-    def telegram_enabled(self) -> bool:
-        return self.data.get("telegram", {}).get("enabled", True)
-
-    @property
-    def discord_enabled(self) -> bool:
-        return self.data.get("discord", {}).get("enabled", False)
-
-    @property
-    def discord_webhook_url(self) -> str:
-        return os.getenv("DISCORD_WEBHOOK_URL") or self.data.get("discord", {}).get("webhook_url", "")
+    def log_level(self) -> str:
+        return str(os.getenv("LOG_LEVEL") or self.get("general", "log_level", "INFO")).upper()
 
     @property
     def strategy_params(self) -> Dict[str, Any]:
-        return self.data.get("strategy_parameters", {})
+        return self.section("strategy_parameters")
+
+    # --------------------------------------------------------------------- mt5
+    @property
+    def mt5_config(self) -> Dict[str, Any]:
+        section = self.section("mt5")
+        return {
+            "login": int(os.getenv("MT5_LOGIN") or section.get("login", 0) or 0),
+            "password": os.getenv("MT5_PASSWORD") or section.get("password", ""),
+            "server": os.getenv("MT5_SERVER") or section.get("server", ""),
+            "terminal_path": os.getenv("MT5_TERMINAL_PATH") or section.get("terminal_path", ""),
+            "magic_number": int(section.get("magic_number", 250730)),
+            "deviation_points": int(section.get("deviation_points", 20)),
+        }
+
+    @property
+    def magic_number(self) -> int:
+        return int(self.get("mt5", "magic_number", 250730))
+
+    @property
+    def symbol_overrides(self) -> Dict[str, str]:
+        overrides = self.get("mt5", "symbol_overrides", {}) or {}
+        return {k: v for k, v in overrides.items() if v}
+
+    @property
+    def auto_detect_symbols(self) -> bool:
+        return bool(self.get("mt5", "auto_detect_symbols", True))
+
+    # -------------------------------------------------------------------- risk
+    @property
+    def risk_config(self) -> Dict[str, Any]:
+        section = self.section("risk")
+        return {
+            "risk_percent": float(section.get("risk_percent", 1.0)),
+            "max_stop_points": section.get("max_stop_points", {}) or {},
+            "max_open_positions": int(section.get("max_open_positions", 2)),
+            "max_positions_per_symbol": int(section.get("max_positions_per_symbol", 1)),
+            "max_daily_trades": int(section.get("max_daily_trades", 6)),
+            "max_daily_loss_percent": float(section.get("max_daily_loss_percent", 3.0)),
+            "account_balance": float(section.get("account_balance_fallback", 10000.0)),
+            "min_risk_reward": float(section.get("min_risk_reward", 0.0)),
+        }
+
+    @property
+    def use_live_balance(self) -> bool:
+        return bool(self.get("risk", "use_live_balance", True))
+
+    # ----------------------------------------------------------------- session
+    @property
+    def session_config(self) -> Dict[str, Any]:
+        section = self.section("session")
+        return {
+            "enabled": bool(section.get("enabled", False)),
+            "start": section.get("start", "09:30"),
+            "end": section.get("end", "10:00"),
+            "timezone": section.get("timezone", "America/New_York"),
+            "trade_days": section.get("trade_days", [0, 1, 2, 3, 4]),
+        }
+
+    # --------------------------------------------------------------- notifiers
+    @property
+    def telegram_enabled(self) -> bool:
+        return bool(self.get("telegram", "enabled", True))
+
+    @property
+    def telegram_bot_token(self) -> str:
+        return os.getenv("TELEGRAM_BOT_TOKEN") or str(self.get("telegram", "bot_token", ""))
+
+    @property
+    def telegram_chat_id(self) -> str:
+        return os.getenv("TELEGRAM_CHAT_ID") or str(self.get("telegram", "chat_id", ""))
+
+    @property
+    def telegram_events(self) -> Optional[List[str]]:
+        return self.get("telegram", "notify_events", None)
+
+    @property
+    def discord_enabled(self) -> bool:
+        return bool(self.get("discord", "enabled", False))
+
+    @property
+    def discord_webhook_url(self) -> str:
+        return os.getenv("DISCORD_WEBHOOK_URL") or str(self.get("discord", "webhook_url", ""))
+
+    @property
+    def discord_events(self) -> Optional[List[str]]:
+        return self.get("discord", "notify_events", None)
+
+    @property
+    def console_events(self) -> Optional[List[str]]:
+        return self.get("console", "notify_events", None)
+
+    # --------------------------------------------------------------- providers
+    @property
+    def twelvedata_api_key(self) -> str:
+        return os.getenv("TWELVEDATA_API_KEY") or str(self.get("twelvedata", "api_key", ""))
+
+    def provider_config(self, name: str) -> Dict[str, Any]:
+        """Constructor kwargs for the named data provider."""
+        key = name.lower()
+        if key == "twelvedata":
+            return {
+                "api_key": self.twelvedata_api_key,
+                "rate_limit_pause": float(self.get("twelvedata", "rate_limit_pause_seconds", 8)),
+            }
+        if key == "yfinance":
+            return {"symbol_mapping": self.get("yfinance", "symbol_mapping", {}) or {}}
+        return {}
+
+    def describe(self) -> Dict[str, Any]:
+        """Config summary for startup logging, with secrets redacted."""
+        return {
+            "symbols": self.symbols,
+            "strategy": self.strategy_name,
+            "broker": self.broker_name,
+            "data_provider": self.data_provider_name,
+            "scan_interval_seconds": self.scan_interval,
+            "risk_percent": self.risk_config["risk_percent"],
+            "max_open_positions": self.risk_config["max_open_positions"],
+            "session": "enabled" if self.session_config["enabled"] else "disabled (24/5)",
+            "telegram": "configured" if (self.telegram_enabled and self.telegram_bot_token) else "off",
+            "discord": "configured" if (self.discord_enabled and self.discord_webhook_url) else "off",
+        }

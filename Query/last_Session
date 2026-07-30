@@ -1,0 +1,458 @@
+I'll start by reading the new strategy spec and understanding the existing codebase structure.
+
+Bash List Query folder contents
+IN
+ls -la "c:/Main Project/Test Trading Folders/5.copy of 4, 1 min scalping/Trading_Automation_bot/Query/"
+
+OUT
+total 12
+drwxr-xr-x 1 Home 197121    0 Jul 30 10:02 .
+drwxr-xr-x 1 Home 197121    0 Jul 30 10:03 ..
+-rw-r--r-- 1 Home 197121 7855 Jul 30 10:01 New_Scalping_Strategy
+Bash Find python files and list root
+IN
+cd "c:/Main Project/Test Trading Folders/5.copy of 4, 1 min scalping/Trading_Automation_bot" && ls -la && echo "---ALL FILES---" && find . -type f -not -path "*/.git/*" -not -path "*/__pycache__/*" -not -path "*/node_modules/*" | sort
+
+AskUserQuestion
+OUT
+Your questions have been answered: "How should orders actually reach your MT5 demo account?"="Python + MetaTrader5 package (Recommended)", "How should take-profit be handled on the live position?"="Partial at 1:3, runner to 1:5 (Recommended)", "The spec's breakeven and scale-in rules require the bot to act on an open position. Enable them?"="Auto breakeven, no scale-in (Recommended)", "Do you know the exact symbol names on your broker's MT5? (e.g. US30 is often 'US30Cash', 'DJI30', '[DJI30]', 'US30.cash')"="Auto-detect + config override (Recommended)". You can now continue with these answers in mind.
+All four recommendations accepted. Locked design: Python + MetaTrader5 package for both data and execution, partial TP at 1:3 → BE → runner to 1:5/zone, auto-breakeven, fuzzy symbol auto-detect, US30 + XAUUSD, no session filter, Telegram only on entry/TP/SL.
+
+Read c:\Main Project\Test Trading Folders\5.copy of 4, 1 min scalping\Trading_Automation_bot\requirements.txt, c:\Main Project\Test Trading Folders\5.copy of 4, 1 min scalping\Trading_Automation_bot\pytest.ini, c:\Main Project\Test Trading Folders\5.copy of 4, 1 min scalping\Trading_Automation_bot\.env.example, c:\Main Project\Test Trading Folders\5.copy of 4, 1 min scalping\Trading_Automation_bot\python_bot\notifiers\base_notifier.py
+Update Todos
+
+Remove old Trident strategy + MQL5 EA; archive Linux/cloud deployment artifacts to legacy/
+
+Rewrite models.py with strategy-agnostic models (Direction, Zone, Swing, Trendline, TradeSignal, Position, TradeEvent, SymbolInfo)
+
+Build python_bot/analysis/ price-action primitives (indicators, swings, zones, structure, trendlines)
+
+Genericize BaseStrategy to multi-timeframe interface + registry
+
+Implement scalp_1m_v1 strategy (5m bias -> 1m structure -> 3 confirmations -> entry/SL/TP) + manage_position
+
+Build brokers/ execution layer (BaseBroker, MT5Broker, PaperBroker) + symbol resolver
+
+Add MT5 data provider; update TwelveData/YFinance/Mock for 1m/5m
+
+Rewrite risk manager (broker tick-value sizing, index support, daily limits)
+
+Build position manager (entry, partial TP, breakeven, TP/SL hit detection)
+
+Convert notifiers to event-based; Telegram only on ENTRY/PARTIAL_TP/TP_HIT/SL_HIT
+
+Rewrite engine, state machine, config.py, config.json, main.py CLI
+
+Rewrite test suite and get it green
+
+Rewrite CLAUDE.md + README.md with LLM modification guide; run graphify .
+Bash Remove old strategy/EA and archive legacy deployment files
+IN
+cd "c:/Main Project/Test Trading Folders/5.copy of 4, 1 min scalping/Trading_Automation_bot" && mkdir -p legacy && rm -rf mql5_ea && rm -f python_bot/strategies/trident_strategy.py tests/test_trident_strategy.py && mv "MQL5 Expert Advisor Development Prompt.pdf" legacy/ && mv GITHUB_ACTIONS_GUIDE.md legacy/ && mv ORACLE_VPS_GUIDE.md legacy/ && mv Dockerfile legacy/ && mv docker-compose.yml legacy/ && mv tgcapital-bot.service legacy/ && mv .github/workflows/alert_bot.yml legacy/ && find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null; ls -la && echo "--- legacy ---" && ls -la legacy
+
+OUT
+    if "JPY" in upper:
+        return "JPY"
+    return "FOREX"
+
+
+def default_symbol_info(symbol: str) -> SymbolInfo:
+    spec = FALLBACK_SPECS[classify_instrument(symbol)]
+    return SymbolInfo(
+        name=symbol,
+        digits=int(spec["digits"]),
+        point=spec["tick_size"],
+        tick_size=spec["tick_size"],
+        tick_value=spec["tick_value"],
+        volume_min=0.01,
+        volume_step=0.01,
+        volume_max=100.0,
+        stops_level_points=0.0,
+        contract_size=spec["contract_size"],
+        tradable=True,
+    )
+
+
+class PaperBroker(BaseBroker):
+    """
+    In-memory broker.
+
+    Price sources, in priority order:
+      1. candles injected with ``set_candles(symbol, timeframe, df)`` (tests)
+      2. a ``BaseDataProvider`` passed as ``data_provider`` (``--dry-run``)
+    """
+
+    def __init__(
+        self,
+        balance: float = 10000.0,
+        currency: str = "USD",
+        data_provider=None,
+        magic_number: int = 250730,
+        exit_check_timeframe: str = "1m",
+        spread_ticks: float = 0.0,
+    ):
+        self.balance = float(balance)
+        self.starting_balance = float(balance)
+        self.currency = currency
+        self.data_provider = data_provider
+        self.magic_number = int(magic_number)
+        self.exit_check_timeframe = exit_check_timeframe
+        self.spread_ticks = float(spread_ticks)
+
+        self._connected = False
+        self._next_ticket = 1000
+        self._positions: Dict[int, BrokerPosition] = {}
+        self._deals: List[ClosedDeal] = []
+        self._candles: Dict[Tuple[str, str], pd.DataFrame] = {}
+        self._symbol_info: Dict[str, SymbolInfo] = {}
+        self._prices: Dict[str, float] = {}
+        self._last_exit_bar: Dict[int, datetime] = {}
+
+    # -------------------------------------------------------------- lifecycle
+    @property
+    def name(self) -> str:
+        return "paper"
+
+    def connect(self) -> bool:
+        self._connected = True
+        logger.info(
+            f"[Paper] Simulated broker connected — balance {self.balance:.2f} {self.currency}. "
+            f"NO REAL ORDERS WILL BE PLACED."
+        )
+        return True
+
+    def disconnect(self) -> None:
+        self._connected = False
+
+    @property
+    def is_connected(self) -> bool:
+        return self._connected
+
+    # ------------------------------------------------------------- test setup
+    def set_candles(self, symbol: str, timeframe: str, df: pd.DataFrame) -> None:
+        self._candles[(symbol, timeframe)] = df.reset_index(drop=True)
+        if len(df):
+            self._prices[symbol] = float(df["close"].iloc[-1])
+
+    def set_symbol_info(self, symbol: str, info: SymbolInfo) -> None:
+        self._symbol_info[symbol] = info
+
+    def set_price(self, symbol: str, price: float) -> None:
+        self._prices[symbol] = float(price)
+
+            percent = action.percent if action.percent is not None else 50.0
+            volume = position.initial_lots * (percent / 100.0)
+
+        volume = self.broker.normalize_volume(position.symbol, volume)
+        info = self.broker.get_symbol_info(position.symbol)
+        remainder = round(position.lots - volume, 8)
+
+        # Refuse a partial that would leave an untradeable remainder behind.
+        if volume <= 0 or (info is not None and 0 < remainder < info.volume_min):
+            logger.info(
+                f"[{position.symbol}] Skipping partial close: position of {position.lots} lots "
+                f"cannot be split (min volume {getattr(info, 'volume_min', 'n/a')}). "
+                f"Letting the runner go to the final target instead."
+            )
+            position.partial_done = True   # do not retry every bar
+            return []
+
+        result = self.broker.close_position(position.ticket, volume=volume)
+        if not result.ok:
+            logger.error(f"[{position.symbol}] Partial close failed: {result.message}")
+            return []
+
+        position.lots = remainder
+        position.partial_done = True
+        exit_price = result.price or (action.metadata or {}).get("target", 0.0)
+        rr = position.rr_at(exit_price) if exit_price else 0.0
+        profit = self._deal_profit_for(position.ticket, volume)
+
+        logger.info(
+            f"[{position.symbol}] PARTIAL CLOSE {volume} lots @ {exit_price} "
+            f"({rr:+.2f}R) — {action.reason}"
+        )
+        return [TradeEvent(
+            event_type=action.event_type or TradeEventType.PARTIAL_TP,
+            symbol=position.symbol,
+            direction=position.direction,
+            price=exit_price,
+            entry_price=position.entry_price,
+            stop_loss=position.stop_loss,
+            take_profit=position.take_profit,
+            lots=volume,
+            profit=profit,
+            rr=rr,
+            ticket=position.ticket,
+            strategy_name=position.strategy_name,
+            message=f"{action.reason} | {remainder:g} lots still running to {position.take_profit}",
+        )]
+
+    def _close(self, position: Position, action: ManagementAction) -> List[TradeEvent]:
+        result = self.broker.close_position(position.ticket)
+        if not result.ok:
+            logger.error(f"[{position.symbol}] Close failed: {result.message}")
+            return []
+        # The closure itself is reported by ``sync()`` from the broker's deal
+        # record, which carries the authoritative price and P/L.
+        logger.info(f"[{position.symbol}] Close requested — {action.reason}")
+        position.metadata["close_reason"] = action.reason
+        return []
+
+    def _scale_in(
+        self, context: SymbolContext, position: Position, action: ManagementAction
+    ) -> List[TradeEvent]:
+        """
+        Opens an additional position in the same direction. The extra position is
+        managed by its server-side SL/TP only (no partial/breakeven handling), and
+        is tracked in ``context.strategy_data['scale_in_tickets']``.
+        """
+        info = self.broker.get_symbol_info(position.symbol)
+        lots = self.broker.normalize_volume(position.symbol, position.initial_lots)
+        if lots <= 0 or info is None:
+            return []
+
+        result = self.broker.place_market_order(
+            symbol=position.symbol,
+            direction=position.direction,
+            lots=lots,
+            stop_loss=position.stop_loss,
+            take_profit=position.take_profit,
+            comment=f"{self.order_comment_prefix} scale",
+            magic=self.magic_number,
+        )
+        if not result.ok:
+            logger.error(f"[{position.symbol}] Scale-in rejected: {result.message}")
+            return []
+
+        position.scale_in_count += 1
+        tickets = context.strategy_data.setdefault("scale_in_tickets", [])
+        tickets.append(result.ticket)
+        self.risk.record_trade_opened()
+
+        logger.info(f"[{position.symbol}] SCALED IN {lots} lots @ {result.price} — {action.reason}")
+        return [TradeEvent(
+            event_type=TradeEventType.SCALED_IN,
+            symbol=position.symbol,
+            direction=position.direction,
+            price=result.price,
+            entry_price=result.price,
+            stop_loss=position.stop_loss,
+            take_profit=position.take_profit,
+            lots=lots,
+            ticket=result.ticket,
+            strategy_name=position.strategy_name,
+            message=action.reason,
+        )]
+
+    # ---------------------------------------------------------------- syncing
+    def sync(self, contexts: Dict[str, SymbolContext]) -> List[TradeEvent]:
+        """
+        Reconcile tracked positions against the broker, every cycle.
+
+        Emits TP_HIT / SL_HIT / CLOSED for anything that disappeared, and keeps
+        SL/TP/volume in step with the broker when they were changed externally.
+        """
+        try:
+            open_positions = self.broker.get_open_positions(magic=self.magic_number)
+        except Exception as exc:
+            logger.error(f"[PositionManager] Could not read open positions: {exc}")
+            return []
+
+        by_ticket: Dict[int, BrokerPosition] = {p.ticket: p for p in open_positions}
+        deals = self._recent_deals()
+        events: List[TradeEvent] = []
+
+        for context in contexts.values():
+            position = context.position
+            if position is None:
+                continue
+
+            live = by_ticket.get(position.ticket)
+            if live is not None:
+                # Still open — trust the broker for SL/TP/volume.
+                position.stop_loss = live.stop_loss or position.stop_loss
+                position.take_profit = live.take_profit or position.take_profit
+                position.lots = live.lots
+                if abs(position.stop_loss - position.entry_price) < 1e-9:
+                    position.breakeven_done = True
+                context.state = SymbolState.POSITION_OPEN
+                continue
+
+            # Gone from the broker: it was closed.
+            event = self._closure_event(position, deals.get(position.ticket, []))
+            events.append(event)
+            self.risk.record_trade_closed(event.profit)
+            context.realized_pnl_today += event.profit
+            context.position = None
+            context.state = SymbolState.SCANNING
+            logger.info(
+                f"[{position.symbol}] Position #{position.ticket} closed as "
+                f"{event.event_type.value} ({event.rr:+.2f}R, P/L {event.profit:+.2f})"
+            )
+
+        return events
+
+    def _recent_deals(self) -> Dict[int, List[ClosedDeal]]:
+        since = datetime.utcnow() - timedelta(minutes=self.deal_lookback_minutes)
+        try:
+            deals = self.broker.get_closed_deals(since)
+        except Exception as exc:
+            logger.warning(f"[PositionManager] Could not read deal history: {exc}")
+            return {}
+
+        grouped: Dict[int, List[ClosedDeal]] = {}
+        for deal in deals:
+            grouped.setdefault(deal.position_ticket, []).append(deal)
+        return grouped
+
+    def _closure_event(self, position: Position, deals: List[ClosedDeal]) -> TradeEvent:
+        """Turn a vanished position into a classified TP/SL/CLOSED event."""
+        # Only count deals not already reported (partial closes emit their own event).
+        fresh = [d for d in deals if d.deal_ticket not in self._seen_deals]
+        for deal in fresh:
+            self._seen_deals.add(deal.deal_ticket)
+
+        profit = sum(d.profit for d in fresh)
+        volume = sum(d.volume for d in fresh) or position.lots
+        final = fresh[-1] if fresh else None
+        exit_price = final.price if final else position.stop_loss
+        reason_note = position.metadata.get("close_reason", "")
+
+        event_type, title = self._classify(position, final, exit_price, profit)
+        rr = position.rr_at(exit_price) if exit_price else 0.0
+
+        message = reason_note or (
+            f"closed by broker ({final.reason})" if final else "closed (no deal record found)"
+        )
+        if position.partial_done:
+            message += " | TP1 was already banked earlier"
+
+        return TradeEvent(
+            event_type=event_type,
+            symbol=position.symbol,
+            direction=position.direction,
+            price=exit_price,
+            entry_price=position.entry_price,
+            stop_loss=position.stop_loss,
+            take_profit=position.take_profit,
+            lots=volume,
+            profit=profit,
+            rr=rr,
+            ticket=position.ticket,
+            strategy_name=position.strategy_name,
+            title=title,
+            message=message,
+        )
+
+    def _classify(
+        self,
+        position: Position,
+        final: Optional[ClosedDeal],
+        exit_price: float,
+        profit: float,
+    ) -> Tuple[TradeEventType, str]:
+        # 1. Broker-reported reason is authoritative.
+        if final is not None:
+            if final.reason == "TP":
+                return TradeEventType.TP_HIT, ""
+            if final.reason == "SL":
+                if position.breakeven_done and abs(exit_price - position.entry_price) < 1e-9:
+                    return TradeEventType.CLOSED, "STOPPED AT BREAKEVEN"
+                return TradeEventType.SL_HIT, ""
+
+        # 2. Compare the exit price against the levels.
+        if exit_price > 0:
+            tolerance = max(position.initial_risk * 0.05, 1e-9)
+            if position.take_profit and abs(exit_price - position.take_profit) <= tolerance:
+                return TradeEventType.TP_HIT, ""
+            if position.stop_loss and abs(exit_price - position.stop_loss) <= tolerance:
+                if position.breakeven_done and abs(position.stop_loss - position.entry_price) < 1e-9:
+                    return TradeEventType.CLOSED, "STOPPED AT BREAKEVEN"
+                return TradeEventType.SL_HIT, ""
+
+        # 3. Fall back to the P/L sign.
+        if profit > 0:
+            return TradeEventType.TP_HIT, "CLOSED IN PROFIT"
+        if profit < 0:
+            return TradeEventType.SL_HIT, "CLOSED AT A LOSS"
+        return TradeEventType.CLOSED, ""
+
+    def _deal_profit_for(self, ticket: int, volume: float) -> float:
+        """Realised P/L of the most recent unreported deal on ``ticket``."""
+        deals = self._recent_deals().get(ticket, [])
+        fresh = [d for d in deals if d.deal_ticket not in self._seen_deals]
+        if not fresh:
+            return 0.0
+        for deal in fresh:
+            self._seen_deals.add(deal.deal_ticket)
+        return sum(d.profit for d in fresh)
+
+    # ------------------------------------------------------------------- utils
+    def close_all(self) -> List[Tuple[int, bool, str]]:
+        """Flatten every position this bot owns. Used by ``--close-all``."""
+        results: List[Tuple[int, bool, str]] = []
+        for position in self.broker.get_open_positions(magic=self.magic_number):
+            result = self.broker.close_position(position.ticket)
+            results.append((position.ticket, result.ok, result.message))
+            logger.info(
+                f"[CloseAll] #{position.ticket} {position.symbol}: "
+                f"{'closed' if result.ok else 'FAILED — ' + result.message}"
+            )
+        return results
+
+    def adopt_orphans(self, contexts: Dict[str, SymbolContext],
+                      symbol_map: Dict[str, str]) -> List[str]:
+        """
+        After a restart, re-attach to positions the bot opened previously but is no
+        longer tracking, so they are still managed and still reported. Returns
+        notes for the log.
+        """
+        tracked = {c.position.ticket for c in contexts.values() if c.position}
+        reverse = {broker: logical for logical, broker in symbol_map.items()}
+        notes: List[str] = []
+
+        for live in self.broker.get_open_positions(magic=self.magic_number):
+            if live.ticket in tracked:
+                continue
+            logical = reverse.get(live.symbol)
+            if logical is None or logical not in contexts:
+                notes.append(
+                    f"#{live.ticket} on {live.symbol} is not a configured symbol — left alone"
+                )
+                continue
+
+            context = contexts[logical]
+            if context.position is not None:
+                continue
+
+            risk = abs(live.entry_price - live.stop_loss) if live.stop_loss else 0.0
+            context.position = Position(
+                ticket=live.ticket,
+                symbol=logical,
+                direction=live.direction,
+                entry_price=live.entry_price,
+                stop_loss=live.stop_loss,
+                take_profit=live.take_profit,
+                lots=live.lots,
+                initial_lots=live.lots,
+                initial_stop_loss=live.stop_loss or live.entry_price - risk * live.direction.sign,
+                opened_at=live.opened_at or datetime.utcnow(),
+                breakeven_done=bool(live.stop_loss) and abs(live.stop_loss - live.entry_price) < 1e-9,
+                # Unknown whether TP1 was banked, so assume it was: never
+                # partial-close a position twice.
+                partial_done=True,
+                strategy_name="adopted",
+                magic=live.magic,
+            )
+            context.state = SymbolState.POSITION_OPEN
+            notes.append(
+                f"adopted #{live.ticket} {live.direction.value} {live.lots} {live.symbol} "
+                f"@ {live.entry_price} (SL {live.stop_loss} TP {live.take_profit})"
+            )
+        return notes
+continue from where you left
+continue from where you left
+Failed to authenticate. API Error: 401 {"error":"Unauthorized - Invalid token"}
+
+continue from where you left, we had worked more in another session

@@ -1,54 +1,121 @@
 {
   "general": {
-    "symbols": [
-      "XAUUSD",
-      "EURUSD",
-      "USDJPY",
-      "GBPUSD",
-      "AUDUSD",
-      "USDCAD",
-      "USDCHF",
-      "EURGBP"
-    ],
-    "scan_interval_seconds": 60,
-    "strategy_name": "trident_v2",
-    "data_provider": "twelvedata",
-    "account_balance": 10000.0,
-    "risk_percent": 1.0,
-    "state_persistence_file": "bot_state.json"
+    "symbols": ["US30", "XAUUSD"],
+    "strategy_name": "scalp_1m_v1",
+    "broker": "mt5",
+    "data_provider": "broker",
+    "scan_interval_seconds": 15,
+    "state_persistence_file": "bot_state.json",
+    "log_file": "bot_execution.log",
+    "log_level": "INFO"
   },
-  "twelvedata": {
-    "api_key": "YOUR_TWELVEDATA_API_KEY",
-    "rate_limit_pause_seconds": 8
-  },
-  "yfinance": {
-    "symbol_mapping": {
-      "XAUUSD": "GC=F",
-      "EURUSD": "EURUSD=X",
-      "USDJPY": "JPY=X",
-      "GBPUSD": "GBPUSD=X",
-      "AUDUSD": "AUDUSD=X",
-      "USDCAD": "CAD=X",
-      "USDCHF": "CHF=X",
-      "EURGBP": "EURGBP=X"
+
+  "mt5": {
+    "login": 0,
+    "password": "",
+    "server": "",
+    "terminal_path": "",
+    "magic_number": 250730,
+    "deviation_points": 20,
+    "auto_detect_symbols": true,
+    "symbol_overrides": {
+      "US30": "",
+      "XAUUSD": ""
     }
   },
+
+  "risk": {
+    "risk_percent": 1.0,
+    "use_live_balance": true,
+    "account_balance_fallback": 10000.0,
+    "max_open_positions": 2,
+    "max_positions_per_symbol": 1,
+    "max_daily_trades": 6,
+    "max_daily_loss_percent": 3.0,
+    "min_risk_reward": 0.0,
+    "max_stop_points": {
+      "US30": 3000.0,
+      "XAUUSD": 600.0,
+      "default": 1500.0
+    }
+  },
+
+  "session": {
+    "enabled": false,
+    "start": "09:30",
+    "end": "10:00",
+    "timezone": "America/New_York",
+    "trade_days": [0, 1, 2, 3, 4]
+  },
+
   "telegram": {
     "enabled": true,
-    "bot_token": "YOUR_TELEGRAM_BOT_TOKEN",
-    "chat_id": "YOUR_TELEGRAM_CHAT_ID"
+    "bot_token": "",
+    "chat_id": "",
+    "notify_events": ["ENTRY", "PARTIAL_TP", "TP_HIT", "SL_HIT", "ERROR"]
   },
+
   "discord": {
     "enabled": false,
-    "webhook_url": "YOUR_DISCORD_WEBHOOK_URL"
+    "webhook_url": "",
+    "notify_events": ["ENTRY", "PARTIAL_TP", "TP_HIT", "SL_HIT", "ERROR"]
   },
+
+  "console": {
+    "notify_events": null
+  },
+
+  "twelvedata": {
+    "api_key": "",
+    "rate_limit_pause_seconds": 8
+  },
+
+  "yfinance": {
+    "symbol_mapping": {}
+  },
+
   "strategy_parameters": {
-    "doji_threshold": 0.10,
-    "ema_periods": [5, 9, 13, 21, 200],
-    "session_start_ny": "03:00",
-    "session_end_ny": "06:30",
-    "session_timezone": "America/New_York",
-    "max_stop_gold_points": 600.0,
-    "max_stop_forex_pips": 100.0
+    "htf_timeframe": "5m",
+    "ltf_timeframe": "1m",
+    "htf_bars": 400,
+    "ltf_bars": 300,
+    "atr_period": 14,
+
+    "swing_lookback_htf": 3,
+    "zone_min_touches": 3,
+    "zone_cluster_atr_mult": 0.35,
+    "zone_proximity_atr_mult": 1.0,
+    "exhaustion_wick_ratio": 0.5,
+    "exhaustion_lookback": 6,
+    "reaction_bars": 3,
+
+    "swing_lookback_ltf": 2,
+    "structure_min_swings": 2,
+    "bos_buffer_atr_mult": 0.0,
+
+    "trendline_lookback": 40,
+    "trendline_min_touches": 2,
+    "trendline_tolerance_atr_mult": 0.1,
+    "trendline_break_buffer_atr_mult": 0.0,
+    "min_confirmations": 3,
+    "require_retest": false,
+    "retest_lookback": 10,
+
+    "ltf_zone_min_touches": 2,
+    "sl_buffer_atr_mult": 0.15,
+    "min_stop_atr_mult": 0.5,
+    "max_stop_atr_mult": 4.0,
+    "partial_rr": 3.0,
+    "final_rr": 5.0,
+    "partial_close_percent": 50.0,
+    "use_zone_take_profit": true,
+    "breakeven_on_secondary_level": true,
+    "breakeven_rr": 1.0,
+    "zone_exit_enabled": true,
+    "zone_exit_min_rr": 1.0,
+    "max_trade_duration_minutes": 30,
+    "close_after_max_duration": true,
+    "enable_scale_in": false,
+    "max_scale_ins": 1
   }
 }

@@ -1,7 +1,15 @@
-requests>=2.31.0
 pandas>=2.0.0
 numpy>=1.24.0
 pytz>=2023.3
+requests>=2.31.0
+
+# Live MT5 trading — Windows only. The rest of the bot (and the whole test
+# suite) runs without it; use `--dry-run` on other platforms.
+MetaTrader5>=5.0.45; platform_system == "Windows"
+
+# Optional third-party data feed / research fallback
 yfinance>=0.2.36
+
+# Testing
 pytest>=7.4.0
 pytest-asyncio>=0.21.0

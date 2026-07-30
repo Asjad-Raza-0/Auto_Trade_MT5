@@ -1,78 +1,95 @@
+"""Telegram Bot API notifier."""
 import logging
+from typing import Iterable, Optional
+
 import requests
-from python_bot.models import TradeSignal
+
+from python_bot.models import Direction, TradeEvent, TradeEventType
 from python_bot.notifiers.base_notifier import BaseNotifier
+from python_bot.notifiers.formatting import DIRECTION_ICON, price_format, style_for
 
 logger = logging.getLogger(__name__)
 
+
 class TelegramNotifier(BaseNotifier):
-    """
-    Sends rich alert messages via Telegram Bot API.
-    """
-    def __init__(self, bot_token: str, chat_id: str):
+    def __init__(self, bot_token: str, chat_id: str,
+                 event_filter: Optional[Iterable[str]] = None, timeout: float = 10.0):
+        super().__init__(event_filter)
         self.bot_token = bot_token
-        self.chat_id = chat_id
+        self.chat_id = str(chat_id)
+        self.timeout = timeout
         self.api_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
 
     @property
     def name(self) -> str:
         return "telegram"
 
-    def format_message(self, signal: TradeSignal) -> str:
-        fvg = signal.fvg
-        sym = signal.symbol
-        is_gold = "XAU" in sym.upper() or "GOLD" in sym.upper()
-        price_fmt = "{:.2f}" if is_gold or "JPY" in sym.upper() else "{:.5f}"
+    def format_message(self, event: TradeEvent) -> str:
+        icon, label = style_for(event)
+        fmt = price_format(event.symbol)
+        rows = [f"{icon} <b>{label}</b>", f"<b>{event.symbol}</b>"]
 
-        entry_str = price_fmt.format(signal.entry_price)
-        sl_str = price_fmt.format(signal.stop_loss)
-        fvg_top_str = price_fmt.format(fvg.top)
-        fvg_bot_str = price_fmt.format(fvg.bottom)
-        fvg_ce_str = price_fmt.format(fvg.ce)
+        if event.direction is not Direction.NONE:
+            rows.append(DIRECTION_ICON[event.direction])
+        rows.append("")
 
-        dist_unit = "points" if is_gold else "pips/points"
+        if event.event_type is TradeEventType.ENTRY:
+            rows += [
+                f"📍 Entry: <code>{fmt.format(event.entry_price)}</code>",
+                f"🛑 Stop loss: <code>{fmt.format(event.stop_loss)}</code>",
+                f"🏁 Take profit: <code>{fmt.format(event.take_profit)}</code>",
+                f"📦 Size: <code>{event.lots:g}</code> lots",
+            ]
+            signal = event.signal
+            if signal is not None:
+                if signal.partial_take_profit:
+                    rows.append(
+                        f"🎯 TP1: <code>{fmt.format(signal.partial_take_profit)}</code> "
+                        f"(close {signal.partial_close_percent:g}%, then SL → breakeven)"
+                    )
+                if signal.risk_reward:
+                    rows.append(f"⚖️ Planned R:R: <code>1:{signal.risk_reward:.1f}</code>")
+                if signal.confirmations:
+                    rows.append(f"✅ Confirmations: <code>{', '.join(signal.confirmations)}</code>")
+        else:
+            if event.price:
+                rows.append(f"💵 Exit price: <code>{fmt.format(event.price)}</code>")
+            if event.lots:
+                rows.append(f"📦 Volume: <code>{event.lots:g}</code> lots")
+            if event.rr:
+                rows.append(f"📊 Result: <code>{event.rr:+.2f}R</code>")
+            if event.profit:
+                sign = "🟢" if event.profit > 0 else "🔴"
+                rows.append(f"{sign} P/L: <code>{event.profit:+.2f}</code>")
 
-        msg = (
-            f"🚨 <b>TRIDENT STRATEGY ALERT</b> 🚨\n\n"
-            f"📈 <b>Symbol</b>: <code>{signal.symbol}</code>\n"
-            f"🎯 <b>Action</b>: <code>{signal.direction}</code>\n"
-            f"📍 <b>Entry Price (FVG Top)</b>: <code>{entry_str}</code>\n"
-            f"🛑 <b>Stop Loss (Candle B Low)</b>: <code>{sl_str}</code>\n"
-            f"📏 <b>Risk Distance</b>: <code>{signal.risk_distance_points:.1f} {dist_unit}</code>\n"
-            f"⚖️ <b>Risk %</b>: <code>{signal.risk_percent}%</code>\n"
-            f"📦 <b>Calculated Size</b>: <code>{signal.calculated_lots:.2f} Lots</code>\n\n"
-            f"🔍 <b>FVG Parameters</b>:\n"
-            f"   • Top: <code>{fvg_top_str}</code>\n"
-            f"   • Bottom: <code>{fvg_bot_str}</code>\n"
-            f"   • CE Level: <code>{fvg_ce_str}</code>\n"
-            f"   • FVG ID: <code>{fvg.id}</code>\n\n"
-            f"🕒 <b>Time</b>: <code>{signal.timestamp.strftime('%Y-%m-%d %H:%M:%S')}</code>\n"
-            f"💡 <b>Notes</b>: {signal.notes}"
-        )
-        return msg
+        if event.ticket:
+            rows.append(f"🎫 Ticket: <code>#{event.ticket}</code>")
+        if event.message:
+            rows.append(f"\n💬 {event.message}")
+        rows.append(f"\n🕒 {event.timestamp.strftime('%Y-%m-%d %H:%M:%S')} UTC")
+        if event.strategy_name:
+            rows.append(f"<i>{event.strategy_name}</i>")
 
-    def send_signal(self, signal: TradeSignal) -> bool:
+        return "\n".join(rows)
+
+    def send_event(self, event: TradeEvent) -> bool:
         if not self.bot_token or not self.chat_id:
-            logger.warning("[TelegramNotifier] Token or Chat ID missing. Alert logged locally.")
+            logger.warning("[Telegram] bot_token or chat_id missing — alert not sent.")
             return False
 
-        message_text = self.format_message(signal)
         payload = {
             "chat_id": self.chat_id,
-            "text": message_text,
+            "text": self.format_message(event),
             "parse_mode": "HTML",
-            "disable_web_page_preview": True
+            "disable_web_page_preview": True,
         }
-
         try:
-            res = requests.post(self.api_url, json=payload, timeout=10)
-            data = res.json()
+            data = requests.post(self.api_url, json=payload, timeout=self.timeout).json()
             if data.get("ok"):
-                logger.info(f"[TelegramNotifier] Signal alert sent for {signal.symbol} successfully!")
+                logger.info(f"[Telegram] Sent {event.event_type.value} for {event.symbol}")
                 return True
-            else:
-                logger.error(f"[TelegramNotifier] Telegram API error: {data.get('description')}")
-                return False
-        except Exception as e:
-            logger.error(f"[TelegramNotifier] Request exception: {e}")
+            logger.error(f"[Telegram] API error: {data.get('description')}")
+            return False
+        except Exception as exc:
+            logger.error(f"[Telegram] Request failed: {exc}")
             return False

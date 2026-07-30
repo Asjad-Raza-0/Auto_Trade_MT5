@@ -90,6 +90,7 @@ class PaperBroker(BaseBroker):
         magic_number: int = 250730,
         exit_check_timeframe: str = "1m",
         spread_ticks: float = 0.0,
+        symbols: Optional[List[str]] = None,
     ):
         self.balance = float(balance)
         self.starting_balance = float(balance)
@@ -107,6 +108,11 @@ class PaperBroker(BaseBroker):
         self._symbol_info: Dict[str, SymbolInfo] = {}
         self._prices: Dict[str, float] = {}
         self._last_exit_bar: Dict[int, datetime] = {}
+
+        # Pre-register the configured symbols so list_symbols() offers them
+        # before any candle has been injected or fetched.
+        for symbol in symbols or []:
+            self._symbol_info[symbol] = default_symbol_info(symbol)
 
     # -------------------------------------------------------------- lifecycle
     @property
@@ -181,6 +187,13 @@ class PaperBroker(BaseBroker):
 
     def get_current_price(self, symbol: str, direction: Direction = Direction.NONE) -> float:
         price = self._prices.get(symbol, 0.0)
+        if price <= 0 and self.data_provider is not None:
+            # No candle has flowed through this broker yet — pull one so a
+            # market order in --dry-run can fill on the latest close.
+            df = self.data_provider.get_candles(symbol, self.exit_check_timeframe, 2)
+            if df is not None and len(df):
+                price = float(df["close"].iloc[-1])
+                self._prices[symbol] = price
         if price <= 0:
             return 0.0
         if self.spread_ticks <= 0:
@@ -324,6 +337,10 @@ class PaperBroker(BaseBroker):
         """
         for position in list(self._positions.values()):
             df = self._candles.get((position.symbol, self.exit_check_timeframe))
+            if (df is None or len(df) == 0) and self.data_provider is not None:
+                df = self.data_provider.get_candles(
+                    position.symbol, self.exit_check_timeframe, 2
+                )
             if df is None or len(df) == 0:
                 continue
 

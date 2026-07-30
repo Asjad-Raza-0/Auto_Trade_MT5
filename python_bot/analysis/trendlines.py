@@ -48,9 +48,8 @@ def fit_trendline(
     Fit the most recent valid trendline of ``kind``.
 
     Walks the newest swing point backwards against older ones and returns the
-    first pair that (a) slopes the right way and (b) is not violated by any bar
-    strictly between the two anchors (allowing ``tolerance``, normally a small
-    ATR fraction).
+    first pair that (a) slopes the right way and (b) is not violated by any
+    intervening PIVOT (allowing ``tolerance``, normally a small ATR fraction).
     """
     if df is None or len(df) == 0:
         return None, "no data"
@@ -63,7 +62,6 @@ def fit_trendline(
         return None, f"need 2 confirmed swing {swing_kind.value.lower()}s within {lookback_bars} bars, have {len(points)}"
 
     newest = points[-1]
-    series = df["high"] if kind is TrendlineKind.DESCENDING else df["low"]
 
     for older in reversed(points[:-1]):
         line = _line_from_points(older, newest, kind)
@@ -76,7 +74,7 @@ def fit_trendline(
         if kind is TrendlineKind.ASCENDING and line.slope <= 0:
             continue
 
-        if not _line_respected(series, line, kind, tolerance):
+        if not _line_respected(points, line, kind, tolerance):
             continue
 
         line.touches = _count_touches(points, line, tolerance)
@@ -90,15 +88,24 @@ def fit_trendline(
     return None, f"no valid {kind.value.lower()} trendline in last {lookback_bars} bars"
 
 
-def _line_respected(series: pd.Series, line: Trendline, kind: TrendlineKind,
+def _line_respected(points: List[SwingPoint], line: Trendline, kind: TrendlineKind,
                     tolerance: float) -> bool:
-    """No bar between the anchors may pierce the line by more than ``tolerance``."""
-    for i in range(line.start_index + 1, line.end_index):
-        expected = line.value_at(i)
-        actual = float(series.iloc[i])
-        if kind is TrendlineKind.DESCENDING and actual > expected + tolerance:
+    """
+    No PIVOT strictly between the anchors may pierce the line by more than
+    ``tolerance``.
+
+    Validating against pivots rather than every raw bar is deliberate: a
+    trendline anchored on a wick extreme is nearly always clipped by the wick of
+    the very next candle, which no trader would call a broken line. Pivots are
+    what the line is drawn across, so pivots are what must respect it.
+    """
+    for point in points:
+        if not (line.start_index < point.index < line.end_index):
+            continue
+        expected = line.value_at(point.index)
+        if kind is TrendlineKind.DESCENDING and point.price > expected + tolerance:
             return False
-        if kind is TrendlineKind.ASCENDING and actual < expected - tolerance:
+        if kind is TrendlineKind.ASCENDING and point.price < expected - tolerance:
             return False
     return True
 
