@@ -7,7 +7,9 @@
     "scan_interval_seconds": 15,
     "state_persistence_file": "bot_state.json",
     "log_file": "bot_execution.log",
-    "log_level": "INFO"
+    "log_level": "INFO",
+    "log_max_mb": 10,
+    "log_backup_count": 5
   },
 
   "mt5": {

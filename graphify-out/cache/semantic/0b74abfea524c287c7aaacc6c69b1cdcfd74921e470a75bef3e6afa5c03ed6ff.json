@@ -1,0 +1,1 @@
+{"nodes": [{"id": "oracle_vps_guide", "label": "Oracle VPS Deployment", "file_type": "document", "source_file": "legacy/ORACLE_VPS_GUIDE.md", "source_location": null}], "edges": [{"source": "oracle_vps_guide", "target": "tgcapitale_mq5", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "legacy/ORACLE_VPS_GUIDE.md"}], "hyperedges": []}

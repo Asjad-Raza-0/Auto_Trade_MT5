@@ -255,6 +255,35 @@
       "trendlinekind"
     ],
     "6": [
+      "python_bot_core_engine",
+      "python_bot_core_position_manager",
+      "python_bot_core_risk_manager",
+      "python_bot_core_state_machine",
+      "python_bot_strategies_base_strategy",
+      "riskmanager",
+      "symbolinfo",
+      "tests_test_risk_manager",
+      "tests_test_risk_manager_make_rm",
+      "tests_test_risk_manager_rationale_1",
+      "tests_test_risk_manager_test_daily_loss_limit_halts_trading",
+      "tests_test_risk_manager_test_daily_trade_limit_blocks_new_positions",
+      "tests_test_risk_manager_test_forex_stop_distance_and_lots",
+      "tests_test_risk_manager_test_gold_excessive_stop_rejection",
+      "tests_test_risk_manager_test_gold_stop_distance_and_lots",
+      "tests_test_risk_manager_test_lots_are_floored_to_volume_step",
+      "tests_test_risk_manager_test_position_caps",
+      "tests_test_risk_manager_test_roll_day_resets_counters",
+      "tests_test_risk_manager_test_stop_below_broker_minimum_is_rejected",
+      "tests_test_risk_manager_test_too_small_position_is_skipped_not_over_risked",
+      "tests_test_state_machine",
+      "tests_test_state_machine_rationale_1",
+      "tests_test_state_machine_test_corrupt_state_file_falls_back_to_clean_state",
+      "tests_test_state_machine_test_reset_clears_setup_but_keeps_position_slot",
+      "tests_test_state_machine_test_roll_day_resets_per_symbol_counters",
+      "tests_test_state_machine_test_state_machine_transitions_and_persistence",
+      "tests_test_state_machine_test_unknown_symbol_gets_a_fresh_context"
+    ],
+    "7": [
       "python_bot_core_session_manager",
       "python_bot_core_session_manager_py_datetime",
       "python_bot_core_session_manager_rationale_1",
@@ -278,46 +307,7 @@
       "tests_test_session_manager_test_window_wrapping_past_midnight",
       "time"
     ],
-    "7": [
-      "python_bot_core_engine",
-      "python_bot_core_position_manager",
-      "python_bot_core_risk_manager",
-      "python_bot_core_state_machine",
-      "python_bot_strategies_base_strategy",
-      "python_bot_strategies_init",
-      "python_bot_strategies_init_available_strategies",
-      "python_bot_strategies_init_get_strategy",
-      "python_bot_strategies_init_py_any",
-      "python_bot_strategies_init_rationale_1",
-      "python_bot_strategies_init_rationale_43",
-      "python_bot_strategies_init_rationale_57",
-      "python_bot_strategies_init_register_strategy",
-      "tests_test_state_machine",
-      "tests_test_state_machine_rationale_1",
-      "tests_test_state_machine_test_corrupt_state_file_falls_back_to_clean_state",
-      "tests_test_state_machine_test_reset_clears_setup_but_keeps_position_slot",
-      "tests_test_state_machine_test_roll_day_resets_per_symbol_counters",
-      "tests_test_state_machine_test_state_machine_transitions_and_persistence",
-      "tests_test_state_machine_test_unknown_symbol_gets_a_fresh_context"
-    ],
     "8": [
-      "riskmanager",
-      "symbolinfo",
-      "tests_test_risk_manager",
-      "tests_test_risk_manager_make_rm",
-      "tests_test_risk_manager_rationale_1",
-      "tests_test_risk_manager_test_daily_loss_limit_halts_trading",
-      "tests_test_risk_manager_test_daily_trade_limit_blocks_new_positions",
-      "tests_test_risk_manager_test_forex_stop_distance_and_lots",
-      "tests_test_risk_manager_test_gold_excessive_stop_rejection",
-      "tests_test_risk_manager_test_gold_stop_distance_and_lots",
-      "tests_test_risk_manager_test_lots_are_floored_to_volume_step",
-      "tests_test_risk_manager_test_position_caps",
-      "tests_test_risk_manager_test_roll_day_resets_counters",
-      "tests_test_risk_manager_test_stop_below_broker_minimum_is_rejected",
-      "tests_test_risk_manager_test_too_small_position_is_skipped_not_over_risked"
-    ],
-    "9": [
       "python_bot_brokers_base_broker",
       "python_bot_brokers_init",
       "python_bot_brokers_init_available_brokers",
@@ -330,7 +320,7 @@
       "python_bot_brokers_mt5_broker",
       "python_bot_brokers_paper_broker"
     ],
-    "10": [
+    "9": [
       "python_bot_core_symbol_resolver",
       "python_bot_core_symbol_resolver_aliases_for",
       "python_bot_core_symbol_resolver_case_insensitive_match",
@@ -342,6 +332,16 @@
       "python_bot_core_symbol_resolver_rationale_56",
       "python_bot_core_symbol_resolver_resolve_all",
       "python_bot_core_symbol_resolver_resolve_symbol"
+    ],
+    "10": [
+      "python_bot_strategies_init",
+      "python_bot_strategies_init_available_strategies",
+      "python_bot_strategies_init_get_strategy",
+      "python_bot_strategies_init_py_any",
+      "python_bot_strategies_init_rationale_1",
+      "python_bot_strategies_init_rationale_43",
+      "python_bot_strategies_init_rationale_57",
+      "python_bot_strategies_init_register_strategy"
     ],
     "11": [
       "mql5_include_fvg_detector",
@@ -554,12 +554,12 @@
     "2": 0.06312292358803986,
     "3": 0.09872241579558652,
     "4": 0.11330049261083744,
-    "5": 0.12698412698412698,
-    "6": 0.15584415584415584,
-    "7": 0.10526315789473684,
-    "8": 0.22857142857142856,
-    "9": 0.2545454545454545,
-    "10": 0.2727272727272727,
+    "5": 0.13227513227513227,
+    "6": 0.10256410256410256,
+    "7": 0.15584415584415584,
+    "8": 0.2545454545454545,
+    "9": 0.2727272727272727,
+    "10": 0.2857142857142857,
     "11": 0.3333333333333333,
     "12": 0.5,
     "13": 1.0,
@@ -680,14 +680,14 @@
   "surprises": [
     {
       "source": "1-Minute Scalper Strategy",
-      "target": "1-Minute Structure Scalper Strategy",
+      "target": "1-Minute Structure Scalper Strategy Concept",
       "source_files": [
         "python_bot/strategies/scalp_1m_strategy.py",
         "CLAUDE.md"
       ],
-      "confidence": "INFERRED",
+      "confidence": "EXTRACTED",
       "relation": "conceptually_related_to",
-      "why": "inferred connection - not explicitly stated in source; crosses file types (code \u2194 doc); connects across different repos/directories; peripheral node `1-Minute Structure Scalper Strategy` unexpectedly reaches hub `1-Minute Scalper Strategy`"
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories; peripheral node `1-Minute Structure Scalper Strategy Concept` unexpectedly reaches hub `1-Minute Scalper Strategy`"
     },
     {
       "source": "test_no_trendline_without_two_pivots()",
@@ -736,6 +736,6 @@
   ],
   "tokens": {
     "input": 5132,
-    "output": 2191
+    "output": 2597
   }
 }

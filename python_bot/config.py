@@ -37,6 +37,8 @@ DEFAULTS: Dict[str, Any] = {
         "state_persistence_file": "bot_state.json",
         "log_file": "bot_execution.log",
         "log_level": "INFO",
+        "log_max_mb": 10,
+        "log_backup_count": 5,
     },
     "mt5": {
         "login": 0,
@@ -153,6 +155,30 @@ class Config:
     @property
     def log_level(self) -> str:
         return str(os.getenv("LOG_LEVEL") or self.get("general", "log_level", "INFO")).upper()
+
+    @property
+    def log_max_mb(self) -> int:
+        val = os.getenv("LOG_MAX_MB")
+        if val:
+            try:
+                return int(val)
+            except ValueError:
+                pass
+        return int(self.get("general", "log_max_mb", 10))
+
+    @property
+    def log_max_bytes(self) -> int:
+        return max(1024 * 1024, self.log_max_mb * 1024 * 1024)
+
+    @property
+    def log_backup_count(self) -> int:
+        val = os.getenv("LOG_BACKUP_COUNT")
+        if val:
+            try:
+                return int(val)
+            except ValueError:
+                pass
+        return max(1, int(self.get("general", "log_backup_count", 5)))
 
     @property
     def strategy_params(self) -> Dict[str, Any]:
@@ -276,6 +302,7 @@ class Config:
             "risk_percent": self.risk_config["risk_percent"],
             "max_open_positions": self.risk_config["max_open_positions"],
             "session": "enabled" if self.session_config["enabled"] else "disabled (24/5)",
+            "log_rotation": f"{self.log_file} ({self.log_max_mb}MB max x {self.log_backup_count} backups)",
             "telegram": "configured" if (self.telegram_enabled and self.telegram_bot_token) else "off",
             "discord": "configured" if (self.discord_enabled and self.discord_webhook_url) else "off",
         }

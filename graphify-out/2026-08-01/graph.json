@@ -31,26 +31,27 @@
         "source_file": "GUIDE.md"
       },
       {
-        "id": "trading_execution_flow",
-        "label": "Trading Execution Flow",
+        "id": "trading_strategy_execution_flow",
+        "label": "Trading Strategy Execution Flow",
         "nodes": [
           "python_bot_core_engine",
-          "python_bot_core_position_manager",
+          "python_bot_strategies_base_strategy",
           "python_bot_core_risk_manager",
-          "python_bot_strategies_base_strategy"
+          "python_bot_core_position_manager"
         ],
         "relation": "participate_in",
         "confidence": "EXTRACTED",
         "confidence_score": 0.95,
-        "source_file": "python_bot/core/engine.py"
+        "source_file": "CLAUDE.md"
       },
       {
-        "id": "strategy_analysis_components",
-        "label": "Strategy Analysis Components",
+        "id": "price_action_analysis_suite",
+        "label": "Price Action Analysis Suite",
         "nodes": [
+          "python_bot_analysis_indicators",
+          "python_bot_analysis_swings",
           "python_bot_analysis_zones",
-          "python_bot_analysis_structure",
-          "python_bot_strategies_scalp_1m_strategy"
+          "python_bot_analysis_structure"
         ],
         "relation": "form",
         "confidence": "EXTRACTED",
@@ -195,7 +196,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "datetime",
       "id": "python_bot_core_session_manager_py_datetime"
     },
@@ -285,7 +286,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "any",
       "id": "python_bot_strategies_init_py_any"
     },
@@ -473,7 +474,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "norm_label": "any",
       "id": "python_bot_brokers_init_py_any"
     },
@@ -563,7 +564,7 @@
       "source_file": "python_bot/core/symbol_resolver.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 10,
+      "community": 9,
       "norm_label": "symbol_resolver.py",
       "id": "python_bot_core_symbol_resolver"
     },
@@ -573,7 +574,7 @@
       "source_file": "python_bot/core/symbol_resolver.py",
       "source_location": "L37",
       "_origin": "ast",
-      "community": 10,
+      "community": 9,
       "norm_label": "normalize()",
       "id": "python_bot_core_symbol_resolver_normalize"
     },
@@ -583,7 +584,7 @@
       "source_file": "python_bot/core/symbol_resolver.py",
       "source_location": "L42",
       "_origin": "ast",
-      "community": 10,
+      "community": 9,
       "norm_label": "aliases_for()",
       "id": "python_bot_core_symbol_resolver_aliases_for"
     },
@@ -593,7 +594,7 @@
       "source_file": "python_bot/core/symbol_resolver.py",
       "source_location": "L51",
       "_origin": "ast",
-      "community": 10,
+      "community": 9,
       "norm_label": "resolve_symbol()",
       "id": "python_bot_core_symbol_resolver_resolve_symbol"
     },
@@ -603,7 +604,7 @@
       "source_file": "python_bot/core/symbol_resolver.py",
       "source_location": "L113",
       "_origin": "ast",
-      "community": 10,
+      "community": 9,
       "norm_label": "_case_insensitive_match()",
       "id": "python_bot_core_symbol_resolver_case_insensitive_match"
     },
@@ -613,7 +614,7 @@
       "source_file": "python_bot/core/symbol_resolver.py",
       "source_location": "L121",
       "_origin": "ast",
-      "community": 10,
+      "community": 9,
       "norm_label": "resolve_all()",
       "id": "python_bot_core_symbol_resolver_resolve_all"
     },
@@ -623,7 +624,7 @@
       "source_file": "python_bot/core/symbol_resolver.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 10,
+      "community": 9,
       "norm_label": "broker symbol-name resolution.  every broker spells the same instrument differen",
       "id": "python_bot_core_symbol_resolver_rationale_1"
     },
@@ -633,7 +634,7 @@
       "source_file": "python_bot/core/symbol_resolver.py",
       "source_location": "L38",
       "_origin": "ast",
-      "community": 10,
+      "community": 9,
       "norm_label": "upper-case and strip everything that is not a letter or digit.",
       "id": "python_bot_core_symbol_resolver_rationale_38"
     },
@@ -643,7 +644,7 @@
       "source_file": "python_bot/core/symbol_resolver.py",
       "source_location": "L43",
       "_origin": "ast",
-      "community": 10,
+      "community": 9,
       "norm_label": "alias list for a logical name; falls back to the name itself.",
       "id": "python_bot_core_symbol_resolver_rationale_43"
     },
@@ -653,7 +654,7 @@
       "source_file": "python_bot/core/symbol_resolver.py",
       "source_location": "L56",
       "_origin": "ast",
-      "community": 10,
+      "community": 9,
       "norm_label": "map ``logical`` onto one of ``available``. returns (broker_symbol, reason).",
       "id": "python_bot_core_symbol_resolver_rationale_56"
     },
@@ -663,7 +664,7 @@
       "source_file": "python_bot/core/symbol_resolver.py",
       "source_location": "L126",
       "_origin": "ast",
-      "community": 10,
+      "community": 9,
       "norm_label": "resolve a whole list. returns (resolved, failures) where ``resolved`` maps     l",
       "id": "python_bot_core_symbol_resolver_rationale_126"
     },
@@ -1153,7 +1154,7 @@
       "source_file": "python_bot/strategies/__init__.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "__init__.py",
       "id": "python_bot_strategies_init"
     },
@@ -1163,7 +1164,7 @@
       "source_file": "python_bot/strategies/__init__.py",
       "source_location": "L42",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "register_strategy()",
       "id": "python_bot_strategies_init_register_strategy"
     },
@@ -1173,7 +1174,7 @@
       "source_file": "python_bot/strategies/__init__.py",
       "source_location": "L49",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "available_strategies()",
       "id": "python_bot_strategies_init_available_strategies"
     },
@@ -1183,7 +1184,7 @@
       "source_file": "python_bot/strategies/__init__.py",
       "source_location": "L53",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "get_strategy()",
       "id": "python_bot_strategies_init_get_strategy"
     },
@@ -1193,7 +1194,7 @@
       "source_file": "python_bot/strategies/__init__.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "strategy registry \u2014 the single place the bot learns that a strategy exists.  add",
       "id": "python_bot_strategies_init_rationale_1"
     },
@@ -1203,7 +1204,7 @@
       "source_file": "python_bot/strategies/__init__.py",
       "source_location": "L43",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "register (or override) a strategy under ``name``. case-insensitive.",
       "id": "python_bot_strategies_init_rationale_43"
     },
@@ -1213,7 +1214,7 @@
       "source_file": "python_bot/strategies/__init__.py",
       "source_location": "L57",
       "_origin": "ast",
-      "community": 7,
+      "community": 10,
       "norm_label": "build a strategy by registry name. raises ``keyerror`` for unknown names \u2014     s",
       "id": "python_bot_strategies_init_rationale_57"
     },
@@ -1449,7 +1450,7 @@
       "source_file": "python_bot/brokers/__init__.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "norm_label": "__init__.py",
       "id": "python_bot_brokers_init"
     },
@@ -1459,7 +1460,7 @@
       "source_file": "python_bot/brokers/__init__.py",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "norm_label": "register_broker()",
       "id": "python_bot_brokers_init_register_broker"
     },
@@ -1469,7 +1470,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "norm_label": "basebroker",
       "id": "python_bot_brokers_init_py_basebroker"
     },
@@ -1479,7 +1480,7 @@
       "source_file": "python_bot/brokers/__init__.py",
       "source_location": "L25",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "norm_label": "available_brokers()",
       "id": "python_bot_brokers_init_available_brokers"
     },
@@ -1489,7 +1490,7 @@
       "source_file": "python_bot/brokers/__init__.py",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "norm_label": "build_broker()",
       "id": "python_bot_brokers_init_build_broker"
     },
@@ -1499,7 +1500,7 @@
       "source_file": "python_bot/brokers/__init__.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "norm_label": "broker registry.  adding a broker: subclass ``basebroker``, then register it her",
       "id": "python_bot_brokers_init_rationale_1"
     },
@@ -1509,7 +1510,7 @@
       "source_file": "python_bot/brokers/__init__.py",
       "source_location": "L30",
       "_origin": "ast",
-      "community": 9,
+      "community": 8,
       "norm_label": "build a broker from its config section.      ``mt5``   -> keys: login, password,",
       "id": "python_bot_brokers_init_rationale_30"
     },
@@ -1519,7 +1520,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "symbolinfo",
       "id": "symbolinfo"
     },
@@ -1659,7 +1660,7 @@
       "source_file": "python_bot/core/session_manager.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "session_manager.py",
       "id": "python_bot_core_session_manager"
     },
@@ -1669,7 +1670,7 @@
       "source_file": "python_bot/core/session_manager.py",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "sessionmanager",
       "id": "python_bot_core_session_manager_sessionmanager"
     },
@@ -1679,7 +1680,7 @@
       "source_file": "python_bot/core/session_manager.py",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": ".__init__()",
       "id": "python_bot_core_session_manager_sessionmanager_init"
     },
@@ -1689,7 +1690,7 @@
       "source_file": "python_bot/core/session_manager.py",
       "source_location": "L45",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "._parse()",
       "id": "python_bot_core_session_manager_sessionmanager_parse"
     },
@@ -1699,7 +1700,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "time",
       "id": "time"
     },
@@ -1709,7 +1710,7 @@
       "source_file": "python_bot/core/session_manager.py",
       "source_location": "L49",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": ".now()",
       "id": "python_bot_core_session_manager_sessionmanager_now"
     },
@@ -1719,7 +1720,7 @@
       "source_file": "python_bot/core/session_manager.py",
       "source_location": "L57",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": ".is_open()",
       "id": "python_bot_core_session_manager_sessionmanager_is_open"
     },
@@ -1729,7 +1730,7 @@
       "source_file": "python_bot/core/session_manager.py",
       "source_location": "L83",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": ".is_dst_active()",
       "id": "python_bot_core_session_manager_sessionmanager_is_dst_active"
     },
@@ -1739,7 +1740,7 @@
       "source_file": "python_bot/core/session_manager.py",
       "source_location": "L86",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": ".describe()",
       "id": "python_bot_core_session_manager_sessionmanager_describe"
     },
@@ -1749,7 +1750,7 @@
       "source_file": "python_bot/core/session_manager.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "optional trading-session filter.  the 1-minute scalper ships with the filter dis",
       "id": "python_bot_core_session_manager_rationale_1"
     },
@@ -1759,7 +1760,7 @@
       "source_file": "python_bot/core/session_manager.py",
       "source_location": "L50",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "``dt`` (or now) converted to the session timezone.",
       "id": "python_bot_core_session_manager_rationale_50"
     },
@@ -1769,7 +1770,7 @@
       "source_file": "python_bot/core/session_manager.py",
       "source_location": "L58",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "returns (open, reason). always open when the filter is disabled.",
       "id": "python_bot_core_session_manager_rationale_58"
     },
@@ -2769,7 +2770,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "test_risk_manager.py",
       "id": "tests_test_risk_manager"
     },
@@ -2779,7 +2780,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "make_rm()",
       "id": "tests_test_risk_manager_make_rm"
     },
@@ -2789,7 +2790,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "riskmanager",
       "id": "riskmanager"
     },
@@ -2799,7 +2800,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "test_gold_stop_distance_and_lots()",
       "id": "tests_test_risk_manager_test_gold_stop_distance_and_lots"
     },
@@ -2809,7 +2810,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L40",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "test_gold_excessive_stop_rejection()",
       "id": "tests_test_risk_manager_test_gold_excessive_stop_rejection"
     },
@@ -2819,7 +2820,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L52",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "test_forex_stop_distance_and_lots()",
       "id": "tests_test_risk_manager_test_forex_stop_distance_and_lots"
     },
@@ -2829,7 +2830,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "test_lots_are_floored_to_volume_step()",
       "id": "tests_test_risk_manager_test_lots_are_floored_to_volume_step"
     },
@@ -2839,7 +2840,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L74",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "test_stop_below_broker_minimum_is_rejected()",
       "id": "tests_test_risk_manager_test_stop_below_broker_minimum_is_rejected"
     },
@@ -2849,7 +2850,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L83",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "test_too_small_position_is_skipped_not_over_risked()",
       "id": "tests_test_risk_manager_test_too_small_position_is_skipped_not_over_risked"
     },
@@ -2859,7 +2860,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L91",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "test_daily_trade_limit_blocks_new_positions()",
       "id": "tests_test_risk_manager_test_daily_trade_limit_blocks_new_positions"
     },
@@ -2869,7 +2870,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L100",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "test_daily_loss_limit_halts_trading()",
       "id": "tests_test_risk_manager_test_daily_loss_limit_halts_trading"
     },
@@ -2879,7 +2880,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L108",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "test_position_caps()",
       "id": "tests_test_risk_manager_test_position_caps"
     },
@@ -2889,7 +2890,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L115",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "test_roll_day_resets_counters()",
       "id": "tests_test_risk_manager_test_roll_day_resets_counters"
     },
@@ -2899,7 +2900,7 @@
       "source_file": "tests/test_risk_manager.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 8,
+      "community": 6,
       "norm_label": "tests for position sizing and the risk gates.",
       "id": "tests_test_risk_manager_rationale_1"
     },
@@ -2909,7 +2910,7 @@
       "source_file": "tests/test_session_manager.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "test_session_manager.py",
       "id": "tests_test_session_manager"
     },
@@ -2919,7 +2920,7 @@
       "source_file": "tests/test_session_manager.py",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "test_disabled_filter_is_always_open()",
       "id": "tests_test_session_manager_test_disabled_filter_is_always_open"
     },
@@ -2929,7 +2930,7 @@
       "source_file": "tests/test_session_manager.py",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "test_inside_the_window()",
       "id": "tests_test_session_manager_test_inside_the_window"
     },
@@ -2939,7 +2940,7 @@
       "source_file": "tests/test_session_manager.py",
       "source_location": "L26",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "test_outside_the_window()",
       "id": "tests_test_session_manager_test_outside_the_window"
     },
@@ -2949,7 +2950,7 @@
       "source_file": "tests/test_session_manager.py",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "test_non_trading_day_is_rejected()",
       "id": "tests_test_session_manager_test_non_trading_day_is_rejected"
     },
@@ -2959,7 +2960,7 @@
       "source_file": "tests/test_session_manager.py",
       "source_location": "L42",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "test_window_wrapping_past_midnight()",
       "id": "tests_test_session_manager_test_window_wrapping_past_midnight"
     },
@@ -2969,7 +2970,7 @@
       "source_file": "tests/test_session_manager.py",
       "source_location": "L51",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "test_utc_input_is_converted_to_session_timezone()",
       "id": "tests_test_session_manager_test_utc_input_is_converted_to_session_timezone"
     },
@@ -2979,7 +2980,7 @@
       "source_file": "tests/test_session_manager.py",
       "source_location": "L59",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "test_dst_detection()",
       "id": "tests_test_session_manager_test_dst_detection"
     },
@@ -2989,7 +2990,7 @@
       "source_file": "tests/test_session_manager.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "tests for the optional trading-session filter.",
       "id": "tests_test_session_manager_rationale_1"
     },
@@ -2999,7 +3000,7 @@
       "source_file": "tests/test_state_machine.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 6,
       "norm_label": "test_state_machine.py",
       "id": "tests_test_state_machine"
     },
@@ -3009,7 +3010,7 @@
       "source_file": "tests/test_state_machine.py",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 7,
+      "community": 6,
       "norm_label": "test_state_machine_transitions_and_persistence()",
       "id": "tests_test_state_machine_test_state_machine_transitions_and_persistence"
     },
@@ -3019,7 +3020,7 @@
       "source_file": "tests/test_state_machine.py",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 7,
+      "community": 6,
       "norm_label": "test_reset_clears_setup_but_keeps_position_slot()",
       "id": "tests_test_state_machine_test_reset_clears_setup_but_keeps_position_slot"
     },
@@ -3029,7 +3030,7 @@
       "source_file": "tests/test_state_machine.py",
       "source_location": "L40",
       "_origin": "ast",
-      "community": 7,
+      "community": 6,
       "norm_label": "test_unknown_symbol_gets_a_fresh_context()",
       "id": "tests_test_state_machine_test_unknown_symbol_gets_a_fresh_context"
     },
@@ -3039,7 +3040,7 @@
       "source_file": "tests/test_state_machine.py",
       "source_location": "L47",
       "_origin": "ast",
-      "community": 7,
+      "community": 6,
       "norm_label": "test_corrupt_state_file_falls_back_to_clean_state()",
       "id": "tests_test_state_machine_test_corrupt_state_file_falls_back_to_clean_state"
     },
@@ -3049,7 +3050,7 @@
       "source_file": "tests/test_state_machine.py",
       "source_location": "L55",
       "_origin": "ast",
-      "community": 7,
+      "community": 6,
       "norm_label": "test_roll_day_resets_per_symbol_counters()",
       "id": "tests_test_state_machine_test_roll_day_resets_per_symbol_counters"
     },
@@ -3059,7 +3060,7 @@
       "source_file": "tests/test_state_machine.py",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 6,
       "norm_label": "tests for the per-symbol context store and its json persistence.",
       "id": "tests_test_state_machine_rationale_1"
     },
@@ -3294,42 +3295,6 @@
       "id": "ubuntu_vps"
     },
     {
-      "label": "Any",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "community": 3,
-      "norm_label": "any",
-      "id": "any"
-    },
-    {
-      "label": "MarketEngine",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "community": 4,
-      "norm_label": "marketengine",
-      "id": "marketengine"
-    },
-    {
-      "label": "Indicators Analysis",
-      "file_type": "code",
-      "source_file": "python_bot/analysis/indicators.py",
-      "community": 5,
-      "norm_label": "indicators analysis",
-      "id": "python_bot_analysis_indicators"
-    },
-    {
-      "label": "Swings Analysis",
-      "file_type": "code",
-      "source_file": "python_bot/analysis/swings.py",
-      "community": 5,
-      "norm_label": "swings analysis",
-      "id": "python_bot_analysis_swings"
-    },
-    {
       "label": "config.py",
       "file_type": "code",
       "source_file": "python_bot/config.py",
@@ -3358,6 +3323,16 @@
       "id": "python_bot_config_deep_merge",
       "community": 3,
       "norm_label": "_deep_merge()"
+    },
+    {
+      "label": "Any",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "any",
+      "community": 3,
+      "norm_label": "any"
     },
     {
       "label": "Config",
@@ -3790,6 +3765,16 @@
       "norm_label": "cmd_list_symbols()"
     },
     {
+      "label": "MarketEngine",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "marketengine",
+      "community": 4,
+      "norm_label": "marketengine"
+    },
+    {
       "label": "cmd_status()",
       "file_type": "code",
       "source_file": "python_bot/main.py",
@@ -3898,11 +3883,19 @@
       "norm_label": "guide.md"
     },
     {
+      "label": "Data Models",
+      "file_type": "code",
+      "source_file": "python_bot/models.py",
+      "id": "python_bot_models",
+      "community": 1,
+      "norm_label": "data models"
+    },
+    {
       "label": "Market Engine",
       "file_type": "code",
       "source_file": "python_bot/core/engine.py",
       "id": "python_bot_core_engine",
-      "community": 7,
+      "community": 6,
       "norm_label": "market engine"
     },
     {
@@ -3910,7 +3903,7 @@
       "file_type": "code",
       "source_file": "python_bot/core/position_manager.py",
       "id": "python_bot_core_position_manager",
-      "community": 7,
+      "community": 6,
       "norm_label": "position manager"
     },
     {
@@ -3918,7 +3911,7 @@
       "file_type": "code",
       "source_file": "python_bot/core/risk_manager.py",
       "id": "python_bot_core_risk_manager",
-      "community": 7,
+      "community": 6,
       "norm_label": "risk manager"
     },
     {
@@ -3926,15 +3919,39 @@
       "file_type": "code",
       "source_file": "python_bot/core/state_machine.py",
       "id": "python_bot_core_state_machine",
-      "community": 7,
+      "community": 6,
       "norm_label": "state machine"
+    },
+    {
+      "label": "Base Broker",
+      "file_type": "code",
+      "source_file": "python_bot/brokers/base_broker.py",
+      "id": "python_bot_brokers_base_broker",
+      "community": 8,
+      "norm_label": "base broker"
+    },
+    {
+      "label": "MT5 Broker",
+      "file_type": "code",
+      "source_file": "python_bot/brokers/mt5_broker.py",
+      "id": "python_bot_brokers_mt5_broker",
+      "community": 8,
+      "norm_label": "mt5 broker"
+    },
+    {
+      "label": "Paper Broker",
+      "file_type": "code",
+      "source_file": "python_bot/brokers/paper_broker.py",
+      "id": "python_bot_brokers_paper_broker",
+      "community": 8,
+      "norm_label": "paper broker"
     },
     {
       "label": "Base Strategy",
       "file_type": "code",
       "source_file": "python_bot/strategies/base_strategy.py",
       "id": "python_bot_strategies_base_strategy",
-      "community": 7,
+      "community": 6,
       "norm_label": "base strategy"
     },
     {
@@ -3946,30 +3963,6 @@
       "norm_label": "1-minute scalper strategy"
     },
     {
-      "label": "Base Broker",
-      "file_type": "code",
-      "source_file": "python_bot/brokers/base_broker.py",
-      "id": "python_bot_brokers_base_broker",
-      "community": 9,
-      "norm_label": "base broker"
-    },
-    {
-      "label": "MT5 Broker",
-      "file_type": "code",
-      "source_file": "python_bot/brokers/mt5_broker.py",
-      "id": "python_bot_brokers_mt5_broker",
-      "community": 9,
-      "norm_label": "mt5 broker"
-    },
-    {
-      "label": "Paper Broker",
-      "file_type": "code",
-      "source_file": "python_bot/brokers/paper_broker.py",
-      "id": "python_bot_brokers_paper_broker",
-      "community": 9,
-      "norm_label": "paper broker"
-    },
-    {
       "label": "Base Data Provider",
       "file_type": "code",
       "source_file": "python_bot/data_providers/base_provider.py",
@@ -3978,12 +3971,28 @@
       "norm_label": "base data provider"
     },
     {
-      "label": "Zone Analysis",
+      "label": "Indicators Analysis",
+      "file_type": "code",
+      "source_file": "python_bot/analysis/indicators.py",
+      "id": "python_bot_analysis_indicators",
+      "community": 5,
+      "norm_label": "indicators analysis"
+    },
+    {
+      "label": "Swings Analysis",
+      "file_type": "code",
+      "source_file": "python_bot/analysis/swings.py",
+      "id": "python_bot_analysis_swings",
+      "community": 5,
+      "norm_label": "swings analysis"
+    },
+    {
+      "label": "Zones Analysis",
       "file_type": "code",
       "source_file": "python_bot/analysis/zones.py",
       "id": "python_bot_analysis_zones",
       "community": 5,
-      "norm_label": "zone analysis"
+      "norm_label": "zones analysis"
     },
     {
       "label": "Structure Analysis",
@@ -3994,20 +4003,12 @@
       "norm_label": "structure analysis"
     },
     {
-      "label": "Models & Dataclasses",
-      "file_type": "code",
-      "source_file": "python_bot/models.py",
-      "id": "python_bot_models",
-      "community": 1,
-      "norm_label": "models & dataclasses"
-    },
-    {
-      "label": "1-Minute Structure Scalper Strategy",
+      "label": "1-Minute Structure Scalper Strategy Concept",
       "file_type": "concept",
       "source_file": "CLAUDE.md",
       "id": "scalp_1m_v1",
       "community": 5,
-      "norm_label": "1-minute structure scalper strategy"
+      "norm_label": "1-minute structure scalper strategy concept"
     }
   ],
   "links": [
@@ -8627,6 +8628,112 @@
       "target": "wine_xvfb"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/config.py",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "python_bot_config",
+      "target": "python_bot_config_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/config.py",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "python_bot_config",
+      "target": "python_bot_config_deep_merge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/config.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "python_bot_config",
+      "target": "python_bot_config_load_dotenv",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/config.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "python_bot_config_rationale_1",
+      "target": "python_bot_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/main.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "python_bot_main",
+      "target": "python_bot_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_logging_and_config.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "tests_test_logging_and_config",
+      "target": "python_bot_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/config.py",
+      "source_location": "L103",
+      "weight": 1.0,
+      "source": "python_bot_config_config_init",
+      "target": "python_bot_config_load_dotenv",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/config.py",
+      "source_location": "L116",
+      "weight": 1.0,
+      "source": "python_bot_config_config_load",
+      "target": "python_bot_config_deep_merge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/config.py",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "python_bot_config_deep_merge",
+      "target": "any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/config.py",
+      "source_location": "L94",
+      "weight": 1.0,
+      "source": "python_bot_config_deep_merge",
+      "target": "python_bot_config_config_get",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "context": "generic_arg",
       "confidence": "EXTRACTED",
@@ -8712,156 +8819,6 @@
       "weight": 1.0,
       "source": "python_bot_config_config_strategy_params",
       "target": "any",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "context": "generic_arg",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/config.py",
-      "source_location": "L91",
-      "weight": 1.0,
-      "source": "python_bot_config_deep_merge",
-      "target": "any",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/main.py",
-      "source_location": "L142",
-      "weight": 1.0,
-      "source": "python_bot_main_cmd_close_all",
-      "target": "marketengine",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/main.py",
-      "source_location": "L102",
-      "weight": 1.0,
-      "source": "python_bot_main_cmd_list_symbols",
-      "target": "marketengine",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/main.py",
-      "source_location": "L134",
-      "weight": 1.0,
-      "source": "python_bot_main_cmd_status",
-      "target": "marketengine",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/main.py",
-      "source_location": "L207",
-      "weight": 1.0,
-      "source": "python_bot_main_main",
-      "target": "marketengine",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/config.py",
-      "source_location": "L101",
-      "weight": 1.0,
-      "source": "python_bot_config",
-      "target": "python_bot_config_config",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/config.py",
-      "source_location": "L91",
-      "weight": 1.0,
-      "source": "python_bot_config",
-      "target": "python_bot_config_deep_merge",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/config.py",
-      "source_location": "L16",
-      "weight": 1.0,
-      "source": "python_bot_config",
-      "target": "python_bot_config_load_dotenv",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/config.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "python_bot_config_rationale_1",
-      "target": "python_bot_config",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/main.py",
-      "source_location": "L22",
-      "weight": 1.0,
-      "source": "python_bot_main",
-      "target": "python_bot_config",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/test_logging_and_config.py",
-      "source_location": "L6",
-      "weight": 1.0,
-      "source": "tests_test_logging_and_config",
-      "target": "python_bot_config",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/config.py",
-      "source_location": "L103",
-      "weight": 1.0,
-      "source": "python_bot_config_config_init",
-      "target": "python_bot_config_load_dotenv",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/config.py",
-      "source_location": "L116",
-      "weight": 1.0,
-      "source": "python_bot_config_config_load",
-      "target": "python_bot_config_deep_merge",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "python_bot/config.py",
-      "source_location": "L94",
-      "weight": 1.0,
-      "source": "python_bot_config_deep_merge",
-      "target": "python_bot_config_config_get",
       "confidence_score": 1.0
     },
     {
@@ -9862,6 +9819,17 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/main.py",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "python_bot_main_cmd_list_symbols",
+      "target": "marketengine",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -9870,6 +9838,39 @@
       "weight": 1.0,
       "source": "python_bot_main_main",
       "target": "python_bot_main_cmd_list_symbols",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/main.py",
+      "source_location": "L142",
+      "weight": 1.0,
+      "source": "python_bot_main_cmd_close_all",
+      "target": "marketengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/main.py",
+      "source_location": "L134",
+      "weight": 1.0,
+      "source": "python_bot_main_cmd_status",
+      "target": "marketengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "python_bot/main.py",
+      "source_location": "L207",
+      "weight": 1.0,
+      "source": "python_bot_main_main",
+      "target": "marketengine",
       "confidence_score": 1.0
     },
     {
@@ -9968,6 +9969,14 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "python_bot/core/engine.py",
+      "source": "python_bot_core_engine",
+      "target": "python_bot_brokers_base_broker"
+    },
+    {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -10003,38 +10012,6 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "python_bot/strategies/scalp_1m_strategy.py",
-      "source": "python_bot_strategies_scalp_1m_strategy",
-      "target": "python_bot_strategies_base_strategy"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "python_bot/strategies/scalp_1m_strategy.py",
-      "source": "python_bot_strategies_scalp_1m_strategy",
-      "target": "python_bot_analysis_structure"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "python_bot/strategies/scalp_1m_strategy.py",
-      "source": "python_bot_strategies_scalp_1m_strategy",
-      "target": "python_bot_analysis_zones"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.9,
-      "source_file": "CLAUDE.md",
-      "source": "python_bot_strategies_scalp_1m_strategy",
-      "target": "scalp_1m_v1"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
       "source_file": "python_bot/brokers/mt5_broker.py",
       "source": "python_bot_brokers_mt5_broker",
       "target": "python_bot_brokers_base_broker"
@@ -10046,6 +10023,54 @@
       "source_file": "python_bot/brokers/paper_broker.py",
       "source": "python_bot_brokers_paper_broker",
       "target": "python_bot_brokers_base_broker"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "python_bot/strategies/scalp_1m_strategy.py",
+      "source": "python_bot_strategies_scalp_1m_strategy",
+      "target": "python_bot_strategies_base_strategy"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "CLAUDE.md",
+      "source": "python_bot_strategies_scalp_1m_strategy",
+      "target": "python_bot_analysis_indicators"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "CLAUDE.md",
+      "source": "python_bot_strategies_scalp_1m_strategy",
+      "target": "python_bot_analysis_structure"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "CLAUDE.md",
+      "source": "python_bot_strategies_scalp_1m_strategy",
+      "target": "python_bot_analysis_swings"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "CLAUDE.md",
+      "source": "python_bot_strategies_scalp_1m_strategy",
+      "target": "python_bot_analysis_zones"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source": "python_bot_strategies_scalp_1m_strategy",
+      "target": "scalp_1m_v1"
     }
   ],
   "hyperedges": [
@@ -10077,26 +10102,27 @@
       "source_file": "GUIDE.md"
     },
     {
-      "id": "trading_execution_flow",
-      "label": "Trading Execution Flow",
+      "id": "trading_strategy_execution_flow",
+      "label": "Trading Strategy Execution Flow",
       "nodes": [
         "python_bot_core_engine",
-        "python_bot_core_position_manager",
+        "python_bot_strategies_base_strategy",
         "python_bot_core_risk_manager",
-        "python_bot_strategies_base_strategy"
+        "python_bot_core_position_manager"
       ],
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 0.95,
-      "source_file": "python_bot/core/engine.py"
+      "source_file": "CLAUDE.md"
     },
     {
-      "id": "strategy_analysis_components",
-      "label": "Strategy Analysis Components",
+      "id": "price_action_analysis_suite",
+      "label": "Price Action Analysis Suite",
       "nodes": [
+        "python_bot_analysis_indicators",
+        "python_bot_analysis_swings",
         "python_bot_analysis_zones",
-        "python_bot_analysis_structure",
-        "python_bot_strategies_scalp_1m_strategy"
+        "python_bot_analysis_structure"
       ],
       "relation": "form",
       "confidence": "EXTRACTED",

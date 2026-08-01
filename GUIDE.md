@@ -6,9 +6,10 @@ This walks you through, in order:
 2. [Verify the code works (offline tests)](#2-verify-the-code-works)
 3. [Test the bot with simulated money (dry run)](#3-dry-run--simulated-trading)
 4. [Test against a real MT5 **demo** account](#4-mt5-demo-account--the-real-rehearsal)
-5. [Go live](#5-going-live)
-6. [Operating it day to day](#6-day-to-day-operation)
-7. [Troubleshooting](#7-troubleshooting)
+5. [24/7 Ubuntu Linux VPS Setup (Oracle Cloud / VPS)](#5-247-ubuntu-linux-vps-setup-oracle-cloud--vps)
+6. [Going live](#6-going-live)
+7. [Operating it day to day](#7-operating-it-day-to-day)
+8. [Troubleshooting](#8-troubleshooting)
 
 **Do not skip stages.** Each stage catches a class of problem the previous one cannot.
 
@@ -172,11 +173,151 @@ python python_bot/main.py            # continuous
 
 ---
 
-## 5. Going live
+## 5. 24/7 Ubuntu Linux VPS Setup (Oracle Cloud / VPS)
+
+To trade 24/7 uninterrupted (demo or live), run the bot on an Ubuntu Linux VPS (such as Oracle Cloud Always Free Tier).
+
+### 5.1 System Preparation & Prerequisites
+
+1. **SSH into your Ubuntu Server**:
+   ```bash
+   ssh ubuntu@<YOUR_SERVER_IP>
+   ```
+
+2. **Update packages and install Python 3 & system utilities**:
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   sudo apt install -y python3 python3-pip python3-venv git curl build-essential
+   ```
+
+3. **Clone / Deploy your code**:
+   ```bash
+   git clone <YOUR_GIT_REPO_URL> /home/ubuntu/Trading_Automation_bot
+   # OR upload project files to /home/ubuntu/Trading_Automation_bot
+   cd /home/ubuntu/Trading_Automation_bot
+   ```
+
+4. **Create Python virtual environment & install requirements**:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   cp .env.example .env
+   ```
+   *Edit `.env` using `nano .env` to add your `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, and MT5 credentials.*
+
+5. **Verify setup with offline tests**:
+   ```bash
+   python -m pytest tests/ -q
+   python python_bot/main.py --test-alert
+   ```
+
+---
+
+### 5.2 Running Paper Trading (`--dry-run`) natively on Ubuntu
+
+For paper trading, backtesting, or strategy testing on Ubuntu without MetaTrader 5 installed:
+
+```bash
+# Run single scan cycle
+python python_bot/main.py --dry-run --once
+
+# Run continuous paper trading
+python python_bot/main.py --dry-run
+```
+
+---
+
+### 5.3 Running Live / Demo MT5 Trading on Ubuntu (via Wine & XVFB)
+
+Because the official `MetaTrader5` Python package requires Windows DLLs, live trading with MT5 on Ubuntu Linux is achieved using **Wine** (Windows compatibility layer) and **XVFB** (Virtual Framebuffer for headless display).
+
+1. **Install Wine & XVFB on Ubuntu**:
+   ```bash
+   sudo dpkg --add-architecture i386
+   sudo apt update
+   sudo apt install -y wine64 wine32 xvfb wget
+   ```
+
+2. **Set up virtual display & environment variables**:
+   ```bash
+   export DISPLAY=:99
+   Xvfb :99 -screen 0 1024x768x16 &
+   ```
+
+3. **Install Windows Python 3.11 inside Wine**:
+   ```bash
+   wget https://www.python.org/ftp/python/3.11.9/python-3.11.9-amd64.exe
+   wine python-3.11.9-amd64.exe /quiet InstallAllUsers=1 PrependPath=1
+   ```
+
+4. **Install MetaTrader 5 inside Wine**:
+   ```bash
+   wget https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/mt5setup.exe
+   wine mt5setup.exe /auto
+   ```
+
+5. **Install requirements & launch bot inside Wine**:
+   ```bash
+   wine python -m pip install -r requirements.txt
+   wine python python_bot/main.py --once   # test single scan cycle
+   wine python python_bot/main.py          # continuous live trading
+   ```
+
+---
+
+### 5.4 24/7 Watchdog & Systemd Service on Ubuntu
+
+To ensure the bot stays online 24/7, restarts automatically on server reboots, and recovers from any network dropouts:
+
+1. **Create a systemd service file**:
+   ```bash
+   sudo nano /etc/systemd/system/tradingbot.service
+   ```
+
+2. **Paste the following configuration**:
+   ```ini
+   [Unit]
+   Description=1-Minute Scalper Trading Bot Service
+   After=network.target
+
+   [Service]
+   Type=simple
+   User=ubuntu
+   WorkingDirectory=/home/ubuntu/Trading_Automation_bot
+   ExecStart=/home/ubuntu/Trading_Automation_bot/venv/bin/python python_bot/main.py --dry-run
+   Restart=always
+   RestartSec=10
+   Environment=PYTHONUNBUFFERED=1
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+   *(Note: If running MT5 via Wine, set `ExecStart=wine python python_bot/main.py` and include `Environment=DISPLAY=:99`)*
+
+3. **Enable and start the service**:
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable tradingbot
+   sudo systemctl start tradingbot
+   ```
+
+4. **Check status and live logs**:
+   ```bash
+   # Check service status
+   sudo systemctl status tradingbot
+
+   # Stream live output logs
+   journalctl -u tradingbot -f
+   ```
+
+---
+
+## 6. Going live
 
 Only after demo behaved correctly for 1–2 weeks.
 
-### 5.1 Pre-flight checklist
+### 6.1 Pre-flight checklist
 
 - [ ] All 45 tests pass: `python -m pytest tests/ -q`
 - [ ] Demo period showed correct entries, sizing, partials, breakeven, time stop
@@ -187,7 +328,7 @@ Only after demo behaved correctly for 1–2 weeks.
 - [ ] The machine running the bot stays on 24/5 (VPS or an always-on PC;
       MT5 terminal must also be running if you attach to it)
 
-### 5.2 Start small
+### 6.2 Start small
 
 In `config.json`, consider for the first weeks:
 
@@ -201,7 +342,7 @@ In `config.json`, consider for the first weeks:
 
 Optionally trade one symbol first: `--symbols US30`.
 
-### 5.3 Switch the terminal/credentials to the live account
+### 6.3 Switch the terminal/credentials to the live account
 
 Exactly as in 4.2 but with the live login. Everything else stays the same —
 that's the point of rehearsing on demo.
@@ -215,7 +356,7 @@ The **magic number** (`mt5.magic_number`, default 250730) tags every order the
 bot places, so it only ever manages/closes *its own* positions — your manual
 trades on the same account are untouched.
 
-### 5.4 Emergency stops
+### 6.4 Emergency stops
 
 ```bash
 python python_bot/main.py --close-all     # close every bot-owned position, then exit
@@ -227,7 +368,7 @@ NOT close trades: if you want them closed, use `--close-all` or do it in MT5.
 
 ---
 
-## 6. Day-to-day operation
+## 7. Day-to-day operation
 
 - `bot_execution.log` — everything the bot did and why (every rejection included).
 - `bot_state.json` — persisted per-symbol state; delete it only if you want a
@@ -244,7 +385,7 @@ by default the session filter is off and the bot trades 24/5.
 
 ---
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 | Symptom | Cause / fix |
 |---|---|
@@ -255,4 +396,7 @@ by default the session filter is off and the bot trades 24/5.
 | Telegram silent | Token/chat-id wrong, or you never messaged the bot first. `--test-alert` to verify |
 | `MetaTrader5 package not available` | Live MT5 needs Windows + `pip install MetaTrader5` |
 | Lots = 0, trade skipped | Stop too wide for `max_stop_points`, below broker min distance, or balance too small for `volume_min` at 1% risk — the log line says which |
+| `pip install numpy` / `Failed to build pandas` | Run `pip install --only-binary=:all: --prefer-binary pandas numpy`. Ensure you are using **Python 3.11 or 3.12 (64-bit)** (Python 3.13/3.14 lacks pre-built binary wheels for MT5/pandas on Windows). |
 | Bot restarted mid-trade | Fine. It re-adopts its positions by magic number on startup |
+| VPS bot stops after RDP disconnect | Configure Task Scheduler or auto-restart loop batch script to run background process independent of RDP session |
+

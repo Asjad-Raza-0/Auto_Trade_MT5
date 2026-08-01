@@ -42,7 +42,9 @@ All CLI flags:
 | `--status` | Print account/symbol/position status as JSON |
 | `--close-all` | Close every position this bot owns, then exit |
 | `--strategy NAME` / `--symbols A,B` | Override config at launch |
-| `--config PATH` / `--env PATH` / `--log-level LEVEL` | Plumbing |
+| `--log-level LEVEL` / `--log-max-mb MB` / `--log-backup-count N` | Log level and auto-rotation limits |
+| `--clean-logs` | Truncate and clean bot log files to free space |
+| `--config PATH` / `--env PATH` | Plumbing |
 
 ---
 

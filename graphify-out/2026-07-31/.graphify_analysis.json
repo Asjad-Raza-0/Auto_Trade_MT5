@@ -1,0 +1,699 @@
+{
+  "communities": {
+    "0": [
+      "tests_conftest",
+      "tests_conftest_bearish_data",
+      "tests_conftest_bearish_htf_frame",
+      "tests_conftest_bearish_ltf_frame",
+      "tests_conftest_bullish_data",
+      "tests_conftest_bullish_htf_frame",
+      "tests_conftest_bullish_ltf_frame",
+      "tests_conftest_candle",
+      "tests_conftest_flat_data",
+      "tests_conftest_flat_frame",
+      "tests_conftest_make_frame",
+      "tests_conftest_py_dataframe",
+      "tests_conftest_py_datetime",
+      "tests_conftest_ramp",
+      "tests_conftest_rationale_1",
+      "tests_conftest_rationale_107",
+      "tests_conftest_rationale_123",
+      "tests_conftest_rationale_143",
+      "tests_conftest_rationale_157",
+      "tests_conftest_rationale_23",
+      "tests_conftest_rationale_39",
+      "tests_conftest_rationale_57",
+      "tests_conftest_rationale_69",
+      "tests_conftest_rationale_84",
+      "tests_conftest_resistance_test",
+      "tests_conftest_support_test",
+      "tests_conftest_zigzag",
+      "tests_test_analysis",
+      "tests_test_analysis_build_zone",
+      "tests_test_analysis_rationale_1",
+      "tests_test_analysis_rationale_160",
+      "tests_test_analysis_rationale_40",
+      "tests_test_analysis_test_atr_is_positive_on_real_movement",
+      "tests_test_analysis_test_atr_never_returns_zero_on_flat_data",
+      "tests_test_analysis_test_break_of_structure_rejects_a_wick_only_poke",
+      "tests_test_analysis_test_break_of_structure_requires_a_close_beyond_the_pivot",
+      "tests_test_analysis_test_exhaustion_needs_a_rejection_wick",
+      "tests_test_analysis_test_find_active_zone_respects_max_distance",
+      "tests_test_analysis_test_next_zone_beyond_picks_the_nearest_obstacle",
+      "tests_test_analysis_test_no_swings_on_flat_data",
+      "tests_test_analysis_test_no_trendline_without_two_pivots",
+      "tests_test_analysis_test_reaction_direction_is_directional",
+      "tests_test_analysis_test_retest_detection",
+      "tests_test_analysis_test_structure_is_none_without_enough_swings",
+      "tests_test_analysis_test_structure_reads_hh_hl",
+      "tests_test_analysis_test_structure_reads_lh_ll",
+      "tests_test_analysis_test_structure_stop_level_uses_the_opposite_extreme",
+      "tests_test_analysis_test_support_zone_requires_minimum_touches",
+      "tests_test_analysis_test_swings_alternate_and_are_confirmed",
+      "tests_test_data_providers",
+      "tests_test_data_providers_rationale_1",
+      "tests_test_data_providers_test_generated_candles_honour_the_contract",
+      "tests_test_data_providers_test_generation_is_deterministic",
+      "tests_test_data_providers_test_preset_candles_are_returned_verbatim",
+      "tests_test_data_providers_test_validate_rejects_broken_frames",
+      "zonekind"
+    ],
+    "1": [
+      "abc",
+      "python_bot_core_engine_marketengine_build_notifiers",
+      "python_bot_models",
+      "python_bot_notifiers_base_notifier",
+      "python_bot_notifiers_base_notifier_basenotifier",
+      "python_bot_notifiers_base_notifier_basenotifier_init",
+      "python_bot_notifiers_base_notifier_basenotifier_name",
+      "python_bot_notifiers_base_notifier_basenotifier_send_event",
+      "python_bot_notifiers_base_notifier_basenotifier_wants",
+      "python_bot_notifiers_base_notifier_notifierhub",
+      "python_bot_notifiers_base_notifier_notifierhub_add",
+      "python_bot_notifiers_base_notifier_notifierhub_channel_names",
+      "python_bot_notifiers_base_notifier_notifierhub_init",
+      "python_bot_notifiers_base_notifier_notifierhub_notify",
+      "python_bot_notifiers_base_notifier_notifierhub_notify_all",
+      "python_bot_notifiers_base_notifier_py_tradeevent",
+      "python_bot_notifiers_base_notifier_rationale_1",
+      "python_bot_notifiers_base_notifier_rationale_14",
+      "python_bot_notifiers_base_notifier_rationale_33",
+      "python_bot_notifiers_base_notifier_rationale_40",
+      "python_bot_notifiers_console_notifier",
+      "python_bot_notifiers_console_notifier_consolenotifier",
+      "python_bot_notifiers_console_notifier_consolenotifier_init",
+      "python_bot_notifiers_console_notifier_consolenotifier_name",
+      "python_bot_notifiers_console_notifier_consolenotifier_send_event",
+      "python_bot_notifiers_console_notifier_py_tradeevent",
+      "python_bot_notifiers_console_notifier_rationale_1",
+      "python_bot_notifiers_discord_notifier",
+      "python_bot_notifiers_discord_notifier_discordnotifier",
+      "python_bot_notifiers_discord_notifier_discordnotifier_init",
+      "python_bot_notifiers_discord_notifier_discordnotifier_name",
+      "python_bot_notifiers_discord_notifier_discordnotifier_send_event",
+      "python_bot_notifiers_discord_notifier_rationale_1",
+      "python_bot_notifiers_formatting",
+      "python_bot_notifiers_formatting_format_plain",
+      "python_bot_notifiers_formatting_price_format",
+      "python_bot_notifiers_formatting_rationale_1",
+      "python_bot_notifiers_formatting_rationale_30",
+      "python_bot_notifiers_formatting_rationale_41",
+      "python_bot_notifiers_formatting_style_for",
+      "python_bot_notifiers_init",
+      "python_bot_notifiers_init_rationale_1",
+      "python_bot_notifiers_telegram_notifier",
+      "python_bot_notifiers_telegram_notifier_py_tradeevent",
+      "python_bot_notifiers_telegram_notifier_rationale_1",
+      "python_bot_notifiers_telegram_notifier_telegramnotifier",
+      "python_bot_notifiers_telegram_notifier_telegramnotifier_format_message",
+      "python_bot_notifiers_telegram_notifier_telegramnotifier_init",
+      "python_bot_notifiers_telegram_notifier_telegramnotifier_name",
+      "python_bot_notifiers_telegram_notifier_telegramnotifier_send_event"
+    ],
+    "2": [
+      "accountinfo",
+      "basebroker",
+      "brokerposition",
+      "closeddeal",
+      "orderresult",
+      "python_bot_brokers_base_broker",
+      "python_bot_brokers_init",
+      "python_bot_brokers_init_available_brokers",
+      "python_bot_brokers_init_build_broker",
+      "python_bot_brokers_init_py_any",
+      "python_bot_brokers_init_py_basebroker",
+      "python_bot_brokers_init_rationale_1",
+      "python_bot_brokers_init_rationale_30",
+      "python_bot_brokers_init_register_broker",
+      "python_bot_brokers_mt5_broker",
+      "python_bot_brokers_paper_broker",
+      "python_bot_brokers_paper_broker_classify_instrument",
+      "python_bot_brokers_paper_broker_default_symbol_info",
+      "python_bot_brokers_paper_broker_paperbroker",
+      "python_bot_brokers_paper_broker_paperbroker_book_exit",
+      "python_bot_brokers_paper_broker_paperbroker_close_position",
+      "python_bot_brokers_paper_broker_paperbroker_connect",
+      "python_bot_brokers_paper_broker_paperbroker_disconnect",
+      "python_bot_brokers_paper_broker_paperbroker_evaluate_exits",
+      "python_bot_brokers_paper_broker_paperbroker_floating_profit",
+      "python_bot_brokers_paper_broker_paperbroker_get_account",
+      "python_bot_brokers_paper_broker_paperbroker_get_candles",
+      "python_bot_brokers_paper_broker_paperbroker_get_closed_deals",
+      "python_bot_brokers_paper_broker_paperbroker_get_current_price",
+      "python_bot_brokers_paper_broker_paperbroker_get_open_positions",
+      "python_bot_brokers_paper_broker_paperbroker_get_symbol_info",
+      "python_bot_brokers_paper_broker_paperbroker_init",
+      "python_bot_brokers_paper_broker_paperbroker_is_connected",
+      "python_bot_brokers_paper_broker_paperbroker_list_symbols",
+      "python_bot_brokers_paper_broker_paperbroker_modify_position",
+      "python_bot_brokers_paper_broker_paperbroker_name",
+      "python_bot_brokers_paper_broker_paperbroker_place_market_order",
+      "python_bot_brokers_paper_broker_paperbroker_profit_for",
+      "python_bot_brokers_paper_broker_paperbroker_set_candles",
+      "python_bot_brokers_paper_broker_paperbroker_set_price",
+      "python_bot_brokers_paper_broker_paperbroker_set_symbol_info",
+      "python_bot_brokers_paper_broker_py_dataframe",
+      "python_bot_brokers_paper_broker_py_datetime",
+      "python_bot_brokers_paper_broker_py_direction",
+      "python_bot_brokers_paper_broker_rationale_1",
+      "python_bot_brokers_paper_broker_rationale_334",
+      "python_bot_brokers_paper_broker_rationale_46",
+      "python_bot_brokers_paper_broker_rationale_77",
+      "symbolinfo"
+    ],
+    "3": [
+      "basestrategy",
+      "managementaction",
+      "position",
+      "python_bot_analysis_structure",
+      "python_bot_analysis_zones",
+      "python_bot_strategies_base_strategy",
+      "python_bot_strategies_init",
+      "python_bot_strategies_init_available_strategies",
+      "python_bot_strategies_init_get_strategy",
+      "python_bot_strategies_init_py_any",
+      "python_bot_strategies_init_rationale_1",
+      "python_bot_strategies_init_rationale_43",
+      "python_bot_strategies_init_rationale_57",
+      "python_bot_strategies_init_register_strategy",
+      "python_bot_strategies_scalp_1m_strategy",
+      "python_bot_strategies_scalp_1m_strategy_bar_time",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_breakeven_trigger",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_build_stop",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_build_targets",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_display_name",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_evaluate",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_htf_bias",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_init",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_manage_position",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_name",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_opposing_zones",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_required_timeframes",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_scale_in_action",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_warmup_bars",
+      "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy_zone_exit_action",
+      "python_bot_strategies_scalp_1m_strategy_py_any",
+      "python_bot_strategies_scalp_1m_strategy_py_dataframe",
+      "python_bot_strategies_scalp_1m_strategy_py_datetime",
+      "python_bot_strategies_scalp_1m_strategy_py_direction",
+      "python_bot_strategies_scalp_1m_strategy_py_symbolcontext",
+      "python_bot_strategies_scalp_1m_strategy_rationale_1",
+      "python_bot_strategies_scalp_1m_strategy_rationale_314",
+      "python_bot_strategies_scalp_1m_strategy_rationale_386",
+      "python_bot_strategies_scalp_1m_strategy_rationale_404",
+      "python_bot_strategies_scalp_1m_strategy_rationale_440",
+      "python_bot_strategies_scalp_1m_strategy_rationale_482",
+      "python_bot_strategies_scalp_1m_strategy_rationale_635",
+      "python_bot_strategies_scalp_1m_strategy_rationale_79",
+      "structureread",
+      "tradesignal",
+      "zone"
+    ],
+    "4": [
+      "python_bot_data_providers_base_provider",
+      "python_bot_data_providers_broker_provider",
+      "python_bot_data_providers_broker_provider_brokerdataprovider",
+      "python_bot_data_providers_broker_provider_brokerdataprovider_get_candles",
+      "python_bot_data_providers_broker_provider_brokerdataprovider_init",
+      "python_bot_data_providers_broker_provider_brokerdataprovider_name",
+      "python_bot_data_providers_broker_provider_py_dataframe",
+      "python_bot_data_providers_broker_provider_rationale_1",
+      "python_bot_data_providers_init",
+      "python_bot_data_providers_init_available_providers",
+      "python_bot_data_providers_init_rationale_1",
+      "python_bot_data_providers_init_register_provider",
+      "python_bot_data_providers_mock_provider",
+      "python_bot_data_providers_mock_provider_mockdataprovider",
+      "python_bot_data_providers_mock_provider_mockdataprovider_generate",
+      "python_bot_data_providers_mock_provider_mockdataprovider_get_candles",
+      "python_bot_data_providers_mock_provider_mockdataprovider_init",
+      "python_bot_data_providers_mock_provider_mockdataprovider_name",
+      "python_bot_data_providers_mock_provider_mockdataprovider_set_candles",
+      "python_bot_data_providers_mock_provider_py_dataframe",
+      "python_bot_data_providers_mock_provider_rationale_1",
+      "python_bot_data_providers_twelvedata_provider",
+      "python_bot_data_providers_twelvedata_provider_py_dataframe",
+      "python_bot_data_providers_twelvedata_provider_rationale_1",
+      "python_bot_data_providers_twelvedata_provider_twelvedataprovider",
+      "python_bot_data_providers_twelvedata_provider_twelvedataprovider_format_symbol",
+      "python_bot_data_providers_twelvedata_provider_twelvedataprovider_get_candles",
+      "python_bot_data_providers_twelvedata_provider_twelvedataprovider_init",
+      "python_bot_data_providers_twelvedata_provider_twelvedataprovider_name",
+      "python_bot_data_providers_twelvedata_provider_twelvedataprovider_to_frame",
+      "python_bot_data_providers_yfinance_provider",
+      "python_bot_data_providers_yfinance_provider_py_dataframe",
+      "python_bot_data_providers_yfinance_provider_rationale_1",
+      "python_bot_data_providers_yfinance_provider_yfinanceprovider",
+      "python_bot_data_providers_yfinance_provider_yfinanceprovider_get_candles",
+      "python_bot_data_providers_yfinance_provider_yfinanceprovider_init",
+      "python_bot_data_providers_yfinance_provider_yfinanceprovider_name"
+    ],
+    "5": [
+      "python_bot_config",
+      "python_bot_core_engine",
+      "python_bot_core_engine_last_bar_time",
+      "python_bot_core_engine_marketengine",
+      "python_bot_core_engine_marketengine_execute_signal",
+      "python_bot_core_engine_marketengine_fastest_role",
+      "python_bot_core_engine_marketengine_fetch_data",
+      "python_bot_core_engine_marketengine_process_symbol",
+      "python_bot_core_engine_marketengine_refresh_balance",
+      "python_bot_core_engine_marketengine_resolve_symbols",
+      "python_bot_core_engine_marketengine_run_scan_cycle",
+      "python_bot_core_engine_marketengine_send_test_alert",
+      "python_bot_core_engine_marketengine_shutdown",
+      "python_bot_core_engine_marketengine_start",
+      "python_bot_core_engine_marketengine_start_async_loop",
+      "python_bot_core_engine_marketengine_status",
+      "python_bot_core_engine_py_dataframe",
+      "python_bot_core_engine_py_datetime",
+      "python_bot_core_engine_py_symbolcontext",
+      "python_bot_core_engine_py_tradeevent",
+      "python_bot_core_engine_rationale_1",
+      "python_bot_core_engine_rationale_134",
+      "python_bot_core_engine_rationale_231",
+      "python_bot_core_engine_rationale_376",
+      "python_bot_core_engine_rationale_429",
+      "python_bot_core_engine_timeframe_minutes",
+      "python_bot_core_position_manager",
+      "python_bot_core_risk_manager",
+      "python_bot_core_state_machine",
+      "tests_test_state_machine",
+      "tests_test_state_machine_rationale_1",
+      "tests_test_state_machine_test_corrupt_state_file_falls_back_to_clean_state",
+      "tests_test_state_machine_test_reset_clears_setup_but_keeps_position_slot",
+      "tests_test_state_machine_test_roll_day_resets_per_symbol_counters",
+      "tests_test_state_machine_test_state_machine_transitions_and_persistence",
+      "tests_test_state_machine_test_unknown_symbol_gets_a_fresh_context"
+    ],
+    "6": [
+      "python_bot_analysis_indicators",
+      "python_bot_analysis_indicators_atr",
+      "python_bot_analysis_indicators_ema",
+      "python_bot_analysis_indicators_last_atr",
+      "python_bot_analysis_indicators_py_dataframe",
+      "python_bot_analysis_indicators_py_series",
+      "python_bot_analysis_indicators_rationale_1",
+      "python_bot_analysis_indicators_rationale_30",
+      "python_bot_analysis_indicators_rationale_36",
+      "python_bot_analysis_indicators_rationale_8",
+      "python_bot_analysis_indicators_sma",
+      "python_bot_analysis_indicators_true_range",
+      "python_bot_analysis_init",
+      "python_bot_analysis_init_rationale_1",
+      "python_bot_analysis_swings",
+      "python_bot_analysis_swings_bar_time",
+      "python_bot_analysis_swings_filter_swings",
+      "python_bot_analysis_swings_find_swing_points",
+      "python_bot_analysis_swings_last_swings",
+      "python_bot_analysis_swings_py_dataframe",
+      "python_bot_analysis_swings_py_datetime",
+      "python_bot_analysis_swings_rationale_1",
+      "python_bot_analysis_swings_rationale_32",
+      "python_bot_analysis_swings_rationale_67"
+    ],
+    "7": [
+      "python_bot_core_session_manager",
+      "python_bot_core_session_manager_py_datetime",
+      "python_bot_core_session_manager_rationale_1",
+      "python_bot_core_session_manager_rationale_50",
+      "python_bot_core_session_manager_rationale_58",
+      "python_bot_core_session_manager_sessionmanager",
+      "python_bot_core_session_manager_sessionmanager_describe",
+      "python_bot_core_session_manager_sessionmanager_init",
+      "python_bot_core_session_manager_sessionmanager_is_dst_active",
+      "python_bot_core_session_manager_sessionmanager_is_open",
+      "python_bot_core_session_manager_sessionmanager_now",
+      "python_bot_core_session_manager_sessionmanager_parse",
+      "tests_test_session_manager",
+      "tests_test_session_manager_rationale_1",
+      "tests_test_session_manager_test_disabled_filter_is_always_open",
+      "tests_test_session_manager_test_dst_detection",
+      "tests_test_session_manager_test_inside_the_window",
+      "tests_test_session_manager_test_non_trading_day_is_rejected",
+      "tests_test_session_manager_test_outside_the_window",
+      "tests_test_session_manager_test_utc_input_is_converted_to_session_timezone",
+      "tests_test_session_manager_test_window_wrapping_past_midnight",
+      "time"
+    ],
+    "8": [
+      "basedataprovider",
+      "python_bot_core_engine_marketengine_broker_config",
+      "python_bot_core_engine_marketengine_build_data_provider",
+      "python_bot_core_engine_marketengine_init",
+      "python_bot_core_engine_py_basebroker",
+      "python_bot_core_engine_py_basestrategy",
+      "riskmanager",
+      "tests_test_risk_manager",
+      "tests_test_risk_manager_make_rm",
+      "tests_test_risk_manager_rationale_1",
+      "tests_test_risk_manager_test_daily_loss_limit_halts_trading",
+      "tests_test_risk_manager_test_daily_trade_limit_blocks_new_positions",
+      "tests_test_risk_manager_test_forex_stop_distance_and_lots",
+      "tests_test_risk_manager_test_gold_excessive_stop_rejection",
+      "tests_test_risk_manager_test_gold_stop_distance_and_lots",
+      "tests_test_risk_manager_test_lots_are_floored_to_volume_step",
+      "tests_test_risk_manager_test_position_caps",
+      "tests_test_risk_manager_test_roll_day_resets_counters",
+      "tests_test_risk_manager_test_stop_below_broker_minimum_is_rejected",
+      "tests_test_risk_manager_test_too_small_position_is_skipped_not_over_risked"
+    ],
+    "9": [
+      "python_bot_analysis_trendlines",
+      "python_bot_analysis_trendlines_count_touches",
+      "python_bot_analysis_trendlines_detect_trendline_break",
+      "python_bot_analysis_trendlines_fit_trendline",
+      "python_bot_analysis_trendlines_line_from_points",
+      "python_bot_analysis_trendlines_line_respected",
+      "python_bot_analysis_trendlines_py_dataframe",
+      "python_bot_analysis_trendlines_py_direction",
+      "python_bot_analysis_trendlines_rationale_1",
+      "python_bot_analysis_trendlines_rationale_114",
+      "python_bot_analysis_trendlines_rationale_129",
+      "python_bot_analysis_trendlines_rationale_162",
+      "python_bot_analysis_trendlines_rationale_47",
+      "python_bot_analysis_trendlines_rationale_93",
+      "python_bot_analysis_trendlines_trendline_kind_for",
+      "swingpoint",
+      "tests_test_analysis_test_descending_trendline_is_found_and_broken",
+      "tests_test_analysis_test_trendline_kind_matches_trade_direction",
+      "trendline",
+      "trendlinekind"
+    ],
+    "10": [
+      "aws_vps",
+      "bot_execution_log",
+      "bot_state_json",
+      "config_json",
+      "github_actions_workflow",
+      "guide_md",
+      "legacy_docker_compose",
+      "metatrader5",
+      "python_bot_main",
+      "run_bot_loop_bat",
+      "telegram_api"
+    ],
+    "11": [
+      "python_bot_core_symbol_resolver",
+      "python_bot_core_symbol_resolver_aliases_for",
+      "python_bot_core_symbol_resolver_case_insensitive_match",
+      "python_bot_core_symbol_resolver_normalize",
+      "python_bot_core_symbol_resolver_rationale_1",
+      "python_bot_core_symbol_resolver_rationale_126",
+      "python_bot_core_symbol_resolver_rationale_38",
+      "python_bot_core_symbol_resolver_rationale_43",
+      "python_bot_core_symbol_resolver_rationale_56",
+      "python_bot_core_symbol_resolver_resolve_all",
+      "python_bot_core_symbol_resolver_resolve_symbol"
+    ],
+    "12": [
+      "mql5_include_fvg_detector",
+      "mql5_include_risk_manager",
+      "mql5_include_state_machine",
+      "mql5_include_trade_manager",
+      "strategy_trident",
+      "tg_capital_ea_mq5"
+    ],
+    "13": [
+      "python_bot_analysis",
+      "python_bot_brokers",
+      "python_bot_core",
+      "python_bot_strategies",
+      "scalp_1m_v1"
+    ],
+    "14": [
+      "legacy_oracle_vps_guide",
+      "tgcapitale_mq5"
+    ],
+    "15": [
+      "python_bot_core_init",
+      "python_bot_core_init_rationale_1"
+    ],
+    "16": [
+      "python_bot_init",
+      "python_bot_init_rationale_1"
+    ],
+    "17": [
+      "tests_init",
+      "tests_init_rationale_1"
+    ],
+    "18": [
+      "enum"
+    ],
+    "19": [
+      "env_file"
+    ],
+    "20": [
+      "legacy_artifacts"
+    ],
+    "21": [
+      "metatrader5_api"
+    ],
+    "22": [
+      "mql5_ea_include_emafilter"
+    ],
+    "23": [
+      "mql5_ea_include_fvgdetector"
+    ],
+    "24": [
+      "mql5_ea_include_riskmanager"
+    ],
+    "25": [
+      "namespace"
+    ],
+    "26": [
+      "python_bot_analysis_structure_py_dataframe"
+    ],
+    "27": [
+      "python_bot_analysis_trendlines_py_series"
+    ],
+    "28": [
+      "python_bot_analysis_zones_py_dataframe"
+    ],
+    "29": [
+      "python_bot_brokers_base_broker_py_dataframe"
+    ],
+    "30": [
+      "python_bot_brokers_base_broker_py_datetime"
+    ],
+    "31": [
+      "python_bot_brokers_mt5_broker_py_any"
+    ],
+    "32": [
+      "python_bot_brokers_mt5_broker_py_dataframe"
+    ],
+    "33": [
+      "python_bot_brokers_mt5_broker_py_datetime"
+    ],
+    "34": [
+      "python_bot_config_py_any"
+    ],
+    "35": [
+      "python_bot_data_providers_base_provider_py_dataframe"
+    ],
+    "36": [
+      "python_bot_models_py_any"
+    ],
+    "37": [
+      "python_bot_notifiers"
+    ],
+    "38": [
+      "python_bot_strategies_base_strategy_py_any"
+    ],
+    "39": [
+      "python_bot_strategies_base_strategy_py_dataframe"
+    ],
+    "40": [
+      "python_bot_strategies_trident_strategy_py_dataframe"
+    ],
+    "41": [
+      "python_bot_strategies_trident_strategy_py_datetime"
+    ],
+    "42": [
+      "readme"
+    ],
+    "43": [
+      "runtimeerror"
+    ],
+    "44": [
+      "series"
+    ],
+    "45": [
+      "str"
+    ],
+    "46": [
+      "tests_test_trident_strategy_py_dataframe"
+    ],
+    "47": [
+      "yfinance"
+    ],
+    "48": [
+      "yfinance_api"
+    ]
+  },
+  "cohesion": {
+    "0": 0.07597402597402597,
+    "1": 0.07346938775510205,
+    "2": 0.06972789115646258,
+    "3": 0.07123034227567067,
+    "4": 0.07507507507507508,
+    "5": 0.08571428571428572,
+    "6": 0.15217391304347827,
+    "7": 0.15584415584415584,
+    "8": 0.15789473684210525,
+    "9": 0.18421052631578946,
+    "10": 0.2,
+    "11": 0.2727272727272727,
+    "12": 0.3333333333333333,
+    "13": 0.4,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0
+  },
+  "gods": [
+    {
+      "id": "python_bot_brokers_paper_broker_paperbroker",
+      "label": "PaperBroker",
+      "degree": 26
+    },
+    {
+      "id": "python_bot_core_engine_marketengine",
+      "label": "MarketEngine",
+      "degree": 18
+    },
+    {
+      "id": "python_bot_core_session_manager_sessionmanager",
+      "label": "SessionManager",
+      "degree": 18
+    },
+    {
+      "id": "python_bot_strategies_scalp_1m_strategy_oneminutescalpstrategy",
+      "label": "OneMinuteScalpStrategy",
+      "degree": 18
+    },
+    {
+      "id": "python_bot_notifiers_base_notifier_basenotifier",
+      "label": "BaseNotifier",
+      "degree": 16
+    },
+    {
+      "id": "tests_conftest_bullish_ltf_frame",
+      "label": "bullish_ltf_frame()",
+      "degree": 16
+    },
+    {
+      "id": "tests_conftest_make_frame",
+      "label": "make_frame()",
+      "degree": 14
+    },
+    {
+      "id": "python_bot_analysis_trendlines_fit_trendline",
+      "label": "fit_trendline()",
+      "degree": 13
+    },
+    {
+      "id": "tests_conftest_bullish_htf_frame",
+      "label": "bullish_htf_frame()",
+      "degree": 13
+    },
+    {
+      "id": "python_bot_models",
+      "label": "Models & Enums",
+      "degree": 13
+    }
+  ],
+  "surprises": [
+    {
+      "source": "GitHub Actions Scanner",
+      "target": "python_bot/main.py",
+      "source_files": [
+        "legacy/alert_bot.yml",
+        "python_bot/main.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "crosses file types (doc \u2194 code); connects across different repos/directories; peripheral node `GitHub Actions Scanner` unexpectedly reaches hub `python_bot/main.py`"
+    },
+    {
+      "source": "GUIDE \u2014 From Zero to Live Trading",
+      "target": "python_bot/main.py",
+      "source_files": [
+        "GUIDE.md",
+        "python_bot/main.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "crosses file types (doc \u2194 code); connects across different repos/directories; peripheral node `GUIDE \u2014 From Zero to Live Trading` unexpectedly reaches hub `python_bot/main.py`"
+    },
+    {
+      "source": "python_bot/main.py",
+      "target": "MetaTrader 5 (MT5)",
+      "source_files": [
+        "python_bot/main.py",
+        "GUIDE.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories; peripheral node `MetaTrader 5 (MT5)` unexpectedly reaches hub `python_bot/main.py`"
+    },
+    {
+      "source": "python_bot/main.py",
+      "target": "Telegram Bot API",
+      "source_files": [
+        "python_bot/main.py",
+        "GUIDE.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "crosses file types (code \u2194 doc); connects across different repos/directories; peripheral node `Telegram Bot API` unexpectedly reaches hub `python_bot/main.py`"
+    },
+    {
+      "source": "test_no_trendline_without_two_pivots()",
+      "target": "fit_trendline()",
+      "source_files": [
+        "tests/test_analysis.py",
+        "python_bot/analysis/trendlines.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities"
+    }
+  ],
+  "tokens": {
+    "input": 5172,
+    "output": 1469
+  }
+}

@@ -13,6 +13,7 @@ import argparse
 import asyncio
 import json
 import logging
+from logging.handlers import RotatingFileHandler
 import os
 import sys
 
@@ -24,12 +25,25 @@ from python_bot.core.engine import MarketEngine  # noqa: E402
 logger = logging.getLogger("scalp_bot")
 
 
-def setup_logging(level: str, log_file: str) -> None:
-    handlers = [logging.StreamHandler(sys.stdout)]
-    try:
-        handlers.append(logging.FileHandler(log_file, encoding="utf-8"))
-    except OSError as exc:
-        print(f"Warning: could not open log file {log_file}: {exc}")
+def setup_logging(
+    level: str,
+    log_file: str,
+    max_bytes: int = 10 * 1024 * 1024,
+    backup_count: int = 5,
+) -> None:
+    handlers: list[logging.Handler] = [logging.StreamHandler(sys.stdout)]
+    if log_file:
+        try:
+            handlers.append(
+                RotatingFileHandler(
+                    log_file,
+                    maxBytes=max_bytes,
+                    backupCount=backup_count,
+                    encoding="utf-8",
+                )
+            )
+        except OSError as exc:
+            print(f"Warning: could not open log file {log_file}: {exc}")
 
     logging.basicConfig(
         level=getattr(logging, level.upper(), logging.INFO),
@@ -61,6 +75,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--strategy", help="override general.strategy_name")
     parser.add_argument("--symbols", help="override general.symbols (comma-separated)")
     parser.add_argument("--log-level", help="DEBUG, INFO, WARNING or ERROR")
+    parser.add_argument("--log-max-mb", type=int, help="max megabytes per log file before rotating (default: 10)")
+    parser.add_argument("--log-backup-count", type=int, help="number of rotated log backups to keep (default: 5)")
+    parser.add_argument("--clean-logs", action="store_true", help="truncate/delete active log files and exit")
     return parser.parse_args()
 
 
@@ -75,6 +92,10 @@ def build_config(args: argparse.Namespace) -> Config:
         config.data["general"]["symbols"] = [s.strip() for s in args.symbols.split(",") if s.strip()]
     if args.log_level:
         config.data["general"]["log_level"] = args.log_level
+    if args.log_max_mb is not None:
+        config.data["general"]["log_max_mb"] = args.log_max_mb
+    if args.log_backup_count is not None:
+        config.data["general"]["log_backup_count"] = args.log_backup_count
     return config
 
 
@@ -131,10 +152,48 @@ def cmd_close_all(engine: MarketEngine) -> int:
     return 0 if all(ok for _, ok, _ in results) else 1
 
 
+def cmd_clean_logs(config: Config) -> int:
+    log_file = config.log_file
+    cleaned = 0
+    if os.path.exists(log_file):
+        try:
+            with open(log_file, "w", encoding="utf-8") as handle:
+                handle.truncate(0)
+            print(f"Truncated main log file: {log_file}")
+            cleaned += 1
+        except Exception as exc:
+            print(f"Failed to truncate {log_file}: {exc}")
+
+    for i in range(1, 100):
+        backup_file = f"{log_file}.{i}"
+        if os.path.exists(backup_file):
+            try:
+                os.remove(backup_file)
+                print(f"Removed backup log file: {backup_file}")
+                cleaned += 1
+            except Exception as exc:
+                print(f"Failed to remove backup file {backup_file}: {exc}")
+
+    if cleaned == 0:
+        print("No log files found to clean.")
+    else:
+        print(f"Successfully cleaned {cleaned} log file(s).")
+    return 0
+
+
 def main() -> int:
     args = parse_args()
     config = build_config(args)
-    setup_logging(config.log_level, config.log_file)
+
+    if args.clean_logs:
+        return cmd_clean_logs(config)
+
+    setup_logging(
+        config.log_level,
+        config.log_file,
+        max_bytes=config.log_max_bytes,
+        backup_count=config.log_backup_count,
+    )
 
     logger.info("=" * 70)
     logger.info("1-Minute Structure Scalper — MetaTrader 5 auto-trading bot")

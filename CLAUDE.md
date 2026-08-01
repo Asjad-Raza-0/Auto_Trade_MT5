@@ -17,12 +17,13 @@ python python_bot/main.py --list-symbols     # how logical names resolve at the 
 python python_bot/main.py --test-alert       # prove Telegram/Discord credentials work
 python python_bot/main.py --status           # account/symbol/position status as JSON
 python python_bot/main.py --close-all        # close every position this bot owns
+python python_bot/main.py --clean-logs       # truncate and clean bot log files
 python python_bot/main.py                    # LIVE trading via MT5
 ```
 
-Useful overrides: `--strategy NAME`, `--symbols US30,XAUUSD`, `--config PATH`, `--env PATH`, `--log-level DEBUG`.
+Useful overrides: `--strategy NAME`, `--symbols US30,XAUUSD`, `--config PATH`, `--env PATH`, `--log-level DEBUG`, `--log-max-mb 10`, `--log-backup-count 5`.
 
-Tests: `python -m pytest tests/ -q` (45 tests, no MT5 or network needed).
+Tests: `python -m pytest tests/ -q` (49 tests, no MT5 or network needed).
 
 See **GUIDE.md** for the full test-first-then-go-live walkthrough.
 
