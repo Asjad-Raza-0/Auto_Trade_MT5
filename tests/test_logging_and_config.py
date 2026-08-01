@@ -26,19 +26,24 @@ def test_config_logging_defaults():
 
 
 def test_config_logging_env_overrides():
-    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
-        tmp.write(b"{}")
-        tmp_path = tmp.name
+    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp_cfg, \
+         tempfile.NamedTemporaryFile(suffix=".env", delete=False) as tmp_env:
+        tmp_cfg.write(b"{}")
+        tmp_cfg_path = tmp_cfg.name
+        tmp_env.write(b"LOG_MAX_MB=10\nLOG_BACKUP_COUNT=5\n")
+        tmp_env_path = tmp_env.name
 
     try:
         with patch.dict(os.environ, {"LOG_MAX_MB": "20", "LOG_BACKUP_COUNT": "3"}):
-            config = Config(config_file=tmp_path)
+            config = Config(config_file=tmp_cfg_path, env_file=tmp_env_path)
             assert config.log_max_mb == 20
             assert config.log_max_bytes == 20 * 1024 * 1024
             assert config.log_backup_count == 3
     finally:
-        if os.path.exists(tmp_path):
-            os.remove(tmp_path)
+        if os.path.exists(tmp_cfg_path):
+            os.remove(tmp_cfg_path)
+        if os.path.exists(tmp_env_path):
+            os.remove(tmp_env_path)
 
 
 def test_setup_logging_uses_rotating_file_handler():

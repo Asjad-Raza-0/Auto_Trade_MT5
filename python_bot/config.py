@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional
 logger = logging.getLogger(__name__)
 
 
-def load_dotenv(env_path: str = ".env") -> None:
+def load_dotenv(env_path: str = ".env", override: bool = False) -> None:
     if not os.path.exists(env_path):
         return
     with open(env_path, "r", encoding="utf-8") as handle:
@@ -24,7 +24,8 @@ def load_dotenv(env_path: str = ".env") -> None:
             key, value = line.split("=", 1)
             key = key.strip()
             if key:
-                os.environ[key] = value.strip().strip("'").strip('"')
+                if override or key not in os.environ:
+                    os.environ[key] = value.strip().strip("'").strip('"')
 
 
 DEFAULTS: Dict[str, Any] = {
